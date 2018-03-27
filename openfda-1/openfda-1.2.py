@@ -16,8 +16,7 @@ print("The total number of repos of this user is:", len(repo))
 repo = repo['results']
 print("The id of the drug is", repo[0]['id'])
 
-
 for drugs in repo:
-    print("The id of the drug is:",repo[0]['id'])
+    print("The id of the drug is:",repo[0]["id"])
 
 
