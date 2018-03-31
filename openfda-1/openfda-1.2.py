@@ -10,13 +10,8 @@ print(r1.status, r1.reason)
 repos_raw = r1.read().decode("utf-8")
 conn.close()
 repo = json.loads(repos_raw)
-print(repo)
-print("The total number of repos of this user is:", len(repo))
-
 repo = repo['results']
-print("The id of the drug is", repo[0]['id'])
-
-for drugs in repo:
-    print("The id of the drug is:",repo[0]["id"])
+for i in range(0,10):
+    print("The id of the drug",i+1,"is:",repo[i]['id'])
 
 
