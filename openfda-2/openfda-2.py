@@ -11,8 +11,8 @@ repos_raw = r1.read().decode("utf-8")
 conn.close()
 repo = json.loads(repos_raw)
 repo = repo['results']
-
-for i in range(0,10):
-    active_ingredient = [repo[i]['active_ingredient']]
-    if "Salicylic acid" in active_ingredient:
-        print("The manufactur name of the drug",i+1,"is:",repo[i]['openfda']['manufacturer_name'])
+active_ingredient = [repo[0]['active_ingredient']]
+print(active_ingredient)
+for number in range(0,20):
+    if "Salicylic acid" in repo[number]['active_ingredient'][0]:
+        print("The manufacturer name of the drug",number+1,"is:",repo[number]['openfda']['manufacturer_name'][0])
