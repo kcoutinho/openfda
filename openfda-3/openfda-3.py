@@ -28,7 +28,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         repo = repo['results']
         for i in range(0,10):
-            message= ("The id of the drug", i + 1, "is:", repo[i]['id'])
+            message= ("The id of the drug is:", repo[i]['id'])
         # Write content as utf-8 data
             self.wfile.write(bytes(message, "utf8"))
             return
