@@ -22,19 +22,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             r1 = conn.getresponse()
             repos_raw = r1.read().decode("utf-8")
             conn.close()
-
-        with open("drugs_html","w") as f:
+            repo = json.loads(repos_raw)
+            repo = repo["results"]
             drugs = []
-            for i in range(0, 10):
-                drugs_names = drugs.append.repo[i]['id']
-                self.write(bytes(drugs, "utf8"))
-
-        repo = repo['results']
-
-
-        # Write content as utf-8 data
-            self.wfile.write(bytes(message, "utf8"))
-            return
+            with open("drugs_html","w") as f:
+                for i in range(0, 10):
+                    drugs_names = drugs.append.repo[i]['id']
+                    f.write(bytes(drugs, "utf8"))
+                return
 
 #Handler = http.server.SimpleHTTPRequestHandler
 Handler = testHTTPRequestHandler
