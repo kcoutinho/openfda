@@ -2,8 +2,10 @@ import http.server
 import socketserver
 import http.client
 import json
-IP="localhost"
-PORT = 8092
+
+IP = "localhost"
+PORT = 8081
+
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -12,10 +14,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # Send response status code
         self.send_response(200)
         # Send headers
-        self.send_header('Content-type','text/html')
+        self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        def drugs_nam():
+        def drugs_names():
             headers = {'id': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             conn.request("GET", "/drug/label.json?limit=10", None, headers)
@@ -25,13 +27,22 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             repo = json.loads(repos_raw)
             repo = repo["results"]
             drugs = []
-            with open("drugs_html","w") as f:
+            with open("drugs_html", "w") as f:
                 for i in range(0, 10):
                     drugs_names = drugs.append.repo[i]['id']
                     f.write(bytes(drugs, "utf8"))
-                return
 
-#Handler = http.server.SimpleHTTPRequestHandler
+            with open("drugs_html","r") as f:
+                file_n = f.read()
+
+            web_contents = file_n
+            web_headers = "HTTP/1.1 200"
+            web_headers += "\n" + "Content-Type: text/html"
+            web_headers += "\n" + "Content-Length: %i" % len(str.encode(web_contents))
+
+
+
+# Handler = http.server.SimpleHTTPRequestHandler
 Handler = testHTTPRequestHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
