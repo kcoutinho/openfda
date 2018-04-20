@@ -29,13 +29,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             repos_raw = r1.read().decode("utf-8")
             conn.close()
 
-        with open ten_drugs as f:
-
+        with open("drugs_html","w"):
+            self.wfile.write(bytes())
+            drugs = []
+            for i in range(0, 10):
+                message = drugs.append.repo[i]['id']
 
         repo = repo['results']
-        drugs=[]
-        for i in range(0,10):
-            message=drugs.append.repo[i]['id']
+
 
         # Write content as utf-8 data
             self.wfile.write(bytes(message, "utf8"))
