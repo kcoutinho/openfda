@@ -15,16 +15,22 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # Send headers
         self.send_header('Content-type','text/html')
         self.end_headers()
+        def
 
+        def drugs_file(file_name):
+            with open(file_name) as f:
+                answer = f.read()
+                self.wfile.write(bytes(answer,"utf8"))
+        def drugs_list():
+            headers = {'id': 'http-client'}
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            conn.request("GET", "/drug/label.json?limit=10", None, headers)
+            r1 = conn.getresponse()
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
 
-        headers = {'id': 'http-client'}
+        with open ten_drugs as f:
 
-        conn = http.client.HTTPSConnection("api.fda.gov")
-        conn.request("GET", "/drug/label.json?limit=10", None, headers)
-        r1 = conn.getresponse()
-        repos_raw = r1.read().decode("utf-8")
-        conn.close()
-        repo = json.loads(repos_raw)
 
         repo = repo['results']
         drugs=[]
