@@ -21,7 +21,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open(file_name) as f:
                 answer = f.read()
                 self.wfile.write(bytes(answer,"utf8"))
-        def drugs_list():
+        def drugs_nam():
             headers = {'id': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             conn.request("GET", "/drug/label.json?limit=10", None, headers)
@@ -33,7 +33,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(bytes())
             drugs = []
             for i in range(0, 10):
-                message = drugs.append.repo[i]['id']
+                drugs_names = drugs.append.repo[i]['id']
 
         repo = repo['results']
 
