@@ -4,17 +4,8 @@ import http.client
 import json
 
 IP = "localhost"
-PORT = 8081
+PORT = 8096
 
-headers = {'id': 'http-client'}
-conn = http.client.HTTPSConnection("api.fda.gov")
-conn.request("GET", "/drug/label.json?limit=10", None, headers)
-r1 = conn.getresponse()
-repos_raw = r1.read().decode("utf-8")
-conn.close()
-repo = json.loads(repos_raw)
-repo = repo["results"]
-drugs = []
 
 
 # HTTPRequestHandler class
@@ -27,20 +18,29 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
+        headers = {'id': 'http-client'}
+        conn = http.client.HTTPSConnection("api.fda.gov")
+        conn.request("GET", "/drug/label.json?limit=10", None, headers)
+        r1 = conn.getresponse()
+        repos_raw = r1.read().decode("utf-8")
+        conn.close()
+        repo = json.loads(repos_raw)
+        repo = repo["results"]
+        drugs = []
+        for i in range(0, 10):
+            drugs.append(repo[i]['id'])
+
+        intro = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
+        end =  "</ol>" + "\n" + "</html>"
+
         with open("drugs_html", "w") as f:
-            for i in range(0, 10):
-                drugs.append(repo[i]['id'])
-        intro=
-
+            f.write(intro)
+            for drug in drugs:
+                drug_name= "<li>" + drug + "<\li"
+                f.write(intro+drug_name)
+            f.write(end)
         with open("drugs_html","r") as f:
-            file = f.read()
-
-        web_contents = file_n
-        web_headers = "HTTP/1.1 200"
-        web_headers += "\n" + "Content-Type: text/html"
-        web_headers += "\n" + "Content-Length: %i" % len(str.encode(web_contents))
-
-
+            f.read()
 
 # Handler = http.server.SimpleHTTPRequestHandler
 Handler = testHTTPRequestHandler
