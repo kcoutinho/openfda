@@ -6,6 +6,16 @@ import json
 IP = "localhost"
 PORT = 8081
 
+headers = {'id': 'http-client'}
+conn = http.client.HTTPSConnection("api.fda.gov")
+conn.request("GET", "/drug/label.json?limit=10", None, headers)
+r1 = conn.getresponse()
+repos_raw = r1.read().decode("utf-8")
+conn.close()
+repo = json.loads(repos_raw)
+repo = repo["results"]
+drugs = []
+
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -17,24 +27,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-
-        headers = {'id': 'http-client'}
-        conn = http.client.HTTPSConnection("api.fda.gov")
-        conn.request("GET", "/drug/label.json?limit=10", None, headers)
-        r1 = conn.getresponse()
-        repos_raw = r1.read().decode("utf-8")
-        conn.close()
-        repo = json.loads(repos_raw)
-
-        repo = repo["results"]
-        drugs = []
         with open("drugs_html", "w") as f:
             for i in range(0, 10):
-                drugs_names = drugs.append.repo[i]['id']
-                f.write(bytes(drugs, "utf8"))
+                drugs.append(repo[i]['id'])
+        intro=
 
         with open("drugs_html","r") as f:
-            file_n = f.read()
+            file = f.read()
 
         web_contents = file_n
         web_headers = "HTTP/1.1 200"
