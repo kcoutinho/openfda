@@ -4,7 +4,7 @@ import http.client
 import json
 
 IP = "localhost"
-PORT = 8096
+PORT = 8092
 
 
 
@@ -28,7 +28,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         repo = repo["results"]
         drugs = []
         for i in range(0, 10):
-            drugs.append(repo[i]['openfda']['manufacturer_name'])
+            drugs.append(repo[i]['id'])
 
         intro = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end =  "</ol>" + "\n" + "</html>"
@@ -36,12 +36,12 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         with open("drugs_html", "w") as f:
             f.write(intro)
             for drug in drugs:
-                drug_name= "<li>" + drug
+                drug_name= "<li>" + drug + "</li>"
                 f.write(drug_name)
             f.write(end)
         with open("drugs_html","r") as f:
-            drugs = f.read()
-        drugs= drugs + self.path
+            file = f.read()
+        drugs= file + self.path
         self.wfile.write(bytes(drugs,"utf8"))
 
 # Handler = http.server.SimpleHTTPRequestHandler
