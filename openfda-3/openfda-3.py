@@ -28,7 +28,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         repo = repo["results"]
         drugs = []
         for i in range(0, 10):
-            drugs.append(repo[i]['id'])
+            drugs.append(repo[i]['openfda']['manufacturer_name'])
 
         intro = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end =  "</ol>" + "\n" + "</html>"
@@ -36,11 +36,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         with open("drugs_html", "w") as f:
             f.write(intro)
             for drug in drugs:
-                drug_name= "<li>" + drug + "<\li"
-                f.write(intro+drug_name)
+                drug_name= "<li>" + drug
+                f.write(drug_name)
             f.write(end)
         with open("drugs_html","r") as f:
-            f.read()
+            drugs = f.read()
+        drugs= drugs + self.path
+        self.wfile.write(bytes(drugs,"utf8"))
 
 # Handler = http.server.SimpleHTTPRequestHandler
 Handler = testHTTPRequestHandler
