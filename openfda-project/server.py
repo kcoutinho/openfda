@@ -2,11 +2,8 @@ import http.server
 import socketserver
 import http.client
 import json
-
-IP = "localhost"
-PORT = 8092
-
-
+IP="localhost"
+PORT = 8000
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -15,36 +12,32 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # Send response status code
         self.send_response(200)
         # Send headers
-        self.send_header('Content-type', 'text/html')
+        self.send_header('Content-type','text/html')
         self.end_headers()
+        if self.path == "/":
+            with open("search.html", "r") as f:
+                response=f.read()
+                self.wfile.write(bytes(response, "utf8"))
+        elif "searchDrug" in self.path:
+            headers = {'id': 'http-client'}
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            components= self.path.split("?")[1]
+            drug= components.split("&")[0].split("=")[1]
+            limit=components.split("&")[1].split("=")[1]
+            url="/drug/label.json?search=active_ingredient:" + drug + "&" + "limit=" + limit
+            print(url)
+            conn.request("GET", "/drug/label.json?limit=10", None, headers)
+            r1 = conn.getresponse()
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
+            drugs =json.loads(repos_raw)
+            drugs_li=str(drugs)
+            self.wfile.write(bytes(drugs_li,"utf8"))
 
-        headers = {'id': 'http-client'}
-        conn = http.client.HTTPSConnection("api.fda.gov")
-        conn.request("GET", "/drug/label.json?limit=10", None, headers)
-        r1 = conn.getresponse()
-        repos_raw = r1.read().decode("utf-8")
-        conn.close()
-        repo = json.loads(repos_raw)
-        repo = repo["results"]
-        drugs = []
-        for i in range(0, 10):
-            drugs.append(repo[i]['id'])
 
-        intro = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
-        end =  "</ol>" + "\n" + "</html>"
+            return
 
-        with open("drugs_html", "w") as f:
-            f.write(intro)
-            for drug in drugs:
-                drug_name= "<li>" + drug + "</li>"
-                f.write(drug_name)
-            f.write(end)
-        with open("drugs_html","r") as f:
-            file = f.read()
-        drugs= file + self.path
-        self.wfile.write(bytes(drugs,"utf8"))
-
-# Handler = http.server.SimpleHTTPRequestHandler
+#Handler = http.server.SimpleHTTPRequestHandler
 Handler = testHTTPRequestHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
