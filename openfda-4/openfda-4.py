@@ -14,32 +14,27 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # Send headers
         self.send_header('Content-type','text/html')
         self.end_headers()
-
-
-        def drugs_file(file_name):
-            with open(file_name) as f:
-                answer = f.read()
-                self.wfile.write(bytes(answer,"utf8"))
-        def drugs_nam():
+        if self.path == "/":
+            with open("search.html", "r") as f:
+                response=f.read()
+                self.wfile.write(bytes(response, "utf8"))
+        elif "search" in self.path:
             headers = {'id': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
+            components= self.path.split("?")[1]
+            drug= components.split("&")[0].split("=")[1]
+            limit=components.split("&")[1].split("=")[1]
+            url="/drug/label.json?search=active_ingredient:" + drug + "&" + "limit=" + limit
+            print(url)
             conn.request("GET", "/drug/label.json?limit=10", None, headers)
             r1 = conn.getresponse()
             repos_raw = r1.read().decode("utf-8")
             conn.close()
-
-        with open("drugs_html","w"):
-            self.wfile.write(bytes())
-            drugs = []
-            for i in range(0, 10):
-                drugs_names = drugs.append.repo[i]['id']
-                self.wfile.write(bytes(drugs_names, "utf8"))
-
-        repo = repo['results']
+            drugs =json.loads(repos_raw)
+            drugs_li=str(drugs)
+            self.wfile.write(bytes(drugs_li,"utf8"))
 
 
-        # Write content as utf-8 data
-            self.wfile.write(bytes(message, "utf8"))
             return
 
 #Handler = http.server.SimpleHTTPRequestHandler
