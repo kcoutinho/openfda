@@ -33,7 +33,23 @@ class openfda(http.server.BaseHTTPRequestHandler):
             for drug in repo[0]['active_ingredient'][0]:
                 drugs.append(drug)
         return drugs
-        print(drugs)
+
+    def searchCompany(self,company):
+        conn = http.client.HTTPSConnection("api.fda.gov")
+        conn.request("GET", "/drug/label.json", None, headers)
+        r1 = conn.getresponse()
+        print(r1.status, r1.reason)
+        repos_raw = r1.read().decode("utf-8")
+        conn.close()
+        repo = json.loads(repos_raw)
+        repo = repo['results']
+        companies = []
+        for element in company:
+            for company in repo[0]['openfda']['manufacturer_name']:
+                companies.append(company)
+        return companies
+
+    
 
 
 
