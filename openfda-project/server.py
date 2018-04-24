@@ -7,9 +7,7 @@ IP="localhost"
 PORT = 8000
 
 # HTTPRequestHandler class
-
-class Openfda(http.server.BaseHTTPRequestHandler):
-
+class openfda(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
         # Send response status code
@@ -17,26 +15,24 @@ class Openfda(http.server.BaseHTTPRequestHandler):
         # Send headers
         self.send_header('Content-type','text/html')
         self.end_headers()
-        if self.path == "/":
-            with open("search.html", "r") as f:
-                response=f.read()
-                self.wfile.write(bytes(response, "utf8"))
 
-        elif "searchDrug" in self.path:
-            headers = {'id': 'http-client'}
-            conn = http.client.HTTPSConnection("api.fda.gov")
-            components= self.path.split("?")[1]
-            drug= components.split("&")[0].split("=")[1]
-            limit=components.split("&")[1].split("=")[1]
-            url="/drug/label.json?search=active_ingredient:" + drug + "&" + "limit=" + limit
-            print(url)
-            conn.request("GET", "/drug/label.json?limit=10", None, headers)
-            r1 = conn.getresponse()
-            repos_raw = r1.read().decode("utf-8")
-            conn.close()
-            drugs =json.loads(repos_raw)
-            drugs_li=str(drugs)
-            self.wfile.write(bytes(drugs_li,"utf8"))
+    headers = {'id': 'http-client'}
+
+    conn = http.client.HTTPSConnection("api.fda.gov")
+    conn.request("GET", "/drug/label.json", None, headers)
+    r1 = conn.getresponse()
+    print(r1.status, r1.reason)
+    repos_raw = r1.read().decode("utf-8")
+    conn.close()
+    repo = json.loads(repos_raw)
+    repo = repo['results']
+    def searchDrug(self, drug):
+        drugs=[]
+        for element in drug:
+            for drug in repo["patient"]["drug"]
+
+
+
 
 
             return
