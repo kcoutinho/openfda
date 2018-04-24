@@ -49,7 +49,7 @@ class openfda(http.server.BaseHTTPRequestHandler):
                 companies.append(company)
         return companies
 
-    
+
 
 
 
