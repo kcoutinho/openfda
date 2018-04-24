@@ -2,11 +2,14 @@ import http.server
 import socketserver
 import http.client
 import json
+socketserver.TCPServer.allow_reuse_adress = True
 IP="localhost"
 PORT = 8000
 
 # HTTPRequestHandler class
-class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
+
+class Openfda(http.server.BaseHTTPRequestHandler):
+
     # GET
     def do_GET(self):
         # Send response status code
@@ -18,6 +21,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open("search.html", "r") as f:
                 response=f.read()
                 self.wfile.write(bytes(response, "utf8"))
+
         elif "searchDrug" in self.path:
             headers = {'id': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
