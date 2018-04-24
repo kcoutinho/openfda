@@ -18,18 +18,22 @@ class openfda(http.server.BaseHTTPRequestHandler):
 
     headers = {'id': 'http-client'}
 
-    conn = http.client.HTTPSConnection("api.fda.gov")
-    conn.request("GET", "/drug/label.json", None, headers)
-    r1 = conn.getresponse()
-    print(r1.status, r1.reason)
-    repos_raw = r1.read().decode("utf-8")
-    conn.close()
-    repo = json.loads(repos_raw)
-    repo = repo['results']
+
     def searchDrug(self, drug):
+        conn = http.client.HTTPSConnection("api.fda.gov")
+        conn.request("GET", "/drug/label.json", None, headers)
+        r1 = conn.getresponse()
+        print(r1.status, r1.reason)
+        repos_raw = r1.read().decode("utf-8")
+        conn.close()
+        repo = json.loads(repos_raw)
+        repo = repo['results']
         drugs=[]
         for element in drug:
-            for drug in repo["patient"]["drug"]
+            for drug in repo[0]['active_ingredient'][0]:
+                drugs.append(drug)
+        return drugs
+        print(drugs)
 
 
 
@@ -38,7 +42,7 @@ class openfda(http.server.BaseHTTPRequestHandler):
             return
 
 #Handler = http.server.SimpleHTTPRequestHandler
-Handler = testHTTPRequestHandler
+Handler = openfda
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 print("serving at port", PORT)
