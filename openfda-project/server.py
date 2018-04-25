@@ -33,7 +33,7 @@ class openfda(http.server.BaseHTTPRequestHandler):
             repos_raw = r1.read().decode("utf-8")
             conn.close()
             drugs = json.loads(repos_raw)
-            drugs_li = str(drugs)
+            
             self.wfile.write(bytes(drugs_li, "utf8"))
         elif "searchCompany" in path:
             company_comp = components.split("&")[0].split("=")[1]
