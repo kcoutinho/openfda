@@ -16,7 +16,27 @@ class openfda(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type','text/html')
         self.end_headers()
 
-    headers = {'id': 'http-client'}
+        path= self.path
+
+        if path == "/":
+            with open("html_response.html", "r") as f:
+                response = f.read()
+                self.wfile.write(bytes(response, "utf8"))
+        headers = {'id': 'http-client'}
+        conn = http.client.HTTPSConnection("api.fda.gov")
+        components = self.path.split("?")[1]
+        elif "searchDrug" in path:
+            drug = components.split("&")[0].split("=")[1]
+            limit = components.split("&")[1].split("=")[1]
+            url = "/drug/label.json?search=active_ingredient:" + drug + "&" + "limit=" + limit
+            print(url)
+            conn.request("GET", "/drug/label.json?limit=10", None, headers)
+            r1 = conn.getresponse()
+        repos_raw = r1.read().decode("utf-8")
+        conn.close()
+        drugs = json.loads(repos_raw)
+        drugs_li = str(drugs)
+        self.wfile.write(bytes(drugs_li, "utf8"))
 
 
     def searchDrug(self, drug):
