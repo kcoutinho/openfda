@@ -21,11 +21,11 @@ class openfda(http.server.BaseHTTPRequestHandler):
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ol>" + "\n" + "</html>"
 
-        with open("drugs_html", "w") as f:
+        with open("file_openfda.html", "w") as f:
             f.write(beginning)
-            for something in drugs:
-                dr = "<li>" + something + "</li>"
-                f.write(drug_name)
+            for something in result:
+                result = "<li>" + something + "</li>"
+                f.write(result)
             f.write(end)
 
         if path == "/":
