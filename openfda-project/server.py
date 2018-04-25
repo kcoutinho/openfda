@@ -18,14 +18,25 @@ class openfda(http.server.BaseHTTPRequestHandler):
 
         path= self.path
 
+        beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
+        end = "</ol>" + "\n" + "</html>"
+
+        with open("drugs_html", "w") as f:
+            f.write(beginning)
+            for something in drugs:
+                dr = "<li>" + something + "</li>"
+                f.write(drug_name)
+            f.write(end)
+
         if path == "/":
             with open("html_response.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
-        headers = {'id': 'http-client'}
-        conn = http.client.HTTPSConnection("api.fda.gov")
-        components = self.path.split("?")[1]
+
         elif "searchDrug" in path:
+            headers = {'id': 'http-client'}
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            components = self.path.split("?")[1]
             drug_comp = components.split("&")[0].split("=")[1]
             limit = components.split("&")[1].split("=")[1]
             conn.request("GET","/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit, None, headers)
@@ -33,9 +44,12 @@ class openfda(http.server.BaseHTTPRequestHandler):
             repos_raw = r1.read().decode("utf-8")
             conn.close()
             drugs = json.loads(repos_raw)
-            
+
             self.wfile.write(bytes(drugs_li, "utf8"))
         elif "searchCompany" in path:
+            headers = {'id': 'http-client'}
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            components = self.path.split("?")[1]
             company_comp = components.split("&")[0].split("=")[1]
             limit = components.split("&")[1].split("=")[1]
             conn.request("GET","/drug/label.json?search=company_name:" + company_comp + "&" + "limit=" + limit, None, headers)
