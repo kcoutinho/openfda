@@ -26,17 +26,27 @@ class openfda(http.server.BaseHTTPRequestHandler):
         conn = http.client.HTTPSConnection("api.fda.gov")
         components = self.path.split("?")[1]
         elif "searchDrug" in path:
-            drug = components.split("&")[0].split("=")[1]
+            drug_comp = components.split("&")[0].split("=")[1]
             limit = components.split("&")[1].split("=")[1]
-            url = "/drug/label.json?search=active_ingredient:" + drug + "&" + "limit=" + limit
-            print(url)
-            conn.request("GET", "/drug/label.json?limit=10", None, headers)
+            conn.request("GET","/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit, None, headers)
             r1 = conn.getresponse()
-        repos_raw = r1.read().decode("utf-8")
-        conn.close()
-        drugs = json.loads(repos_raw)
-        drugs_li = str(drugs)
-        self.wfile.write(bytes(drugs_li, "utf8"))
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
+            drugs = json.loads(repos_raw)
+            drugs_li = str(drugs)
+            self.wfile.write(bytes(drugs_li, "utf8"))
+        elif "searchCompany" in path:
+            company_comp = components.split("&")[0].split("=")[1]
+            limit = components.split("&")[1].split("=")[1]
+            conn.request("GET","/drug/label.json?search=company_name:" + company_comp + "&" + "limit=" + limit, None, headers)
+            r1 = conn.getresponse()
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
+            companies = json.loads(repos_raw)
+            companies_li = str(companies)
+            self.wfile.write(bytes(drugs_li, "utf8"))
+        elif "listDrugs" in path:
+
 
 
     def searchDrug(self, drug):
