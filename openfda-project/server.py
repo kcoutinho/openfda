@@ -43,9 +43,14 @@ class openfda(http.server.BaseHTTPRequestHandler):
             r1 = conn.getresponse()
             repos_raw = r1.read().decode("utf-8")
             conn.close()
-            drugs = json.loads(repos_raw)
+            repo = json.loads(repos_raw)
+            repo = repo['results']
+            drugs = str(repo)
+            for element in repo:
+                for drug in repo[0]['active_ingredient'][0]:
+                    drugs.append(drug)
+            self.wfile.write(bytes(drugs, "utf8"))
 
-            self.wfile.write(bytes(drugs_li, "utf8"))
         elif "searchCompany" in path:
             headers = {'id': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
@@ -56,10 +61,18 @@ class openfda(http.server.BaseHTTPRequestHandler):
             r1 = conn.getresponse()
             repos_raw = r1.read().decode("utf-8")
             conn.close()
-            companies = json.loads(repos_raw)
-            companies_li = str(companies)
-            self.wfile.write(bytes(drugs_li, "utf8"))
+            repo = json.loads(repos_raw)
+            repo= repo['results']
+            companies=str(repo)
+            for element in repo:
+                for company in repo[0]['active_ingredient'][0]:
+                    company.append(companies)
+            self.wfile.write(bytes(companies, "utf8"))
+
         elif "listDrugs" in path:
+
+        elif "listCompanies" in path:
+
 
 
 
