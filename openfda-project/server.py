@@ -63,54 +63,43 @@ class openfda(http.server.BaseHTTPRequestHandler):
             conn.close()
             repo = json.loads(repos_raw)
             repo= repo['results']
-            companies=str(repo)
-            for element in repo:
-                for company in repo[0]['active_ingredient'][0]:
-                    company.append(companies)
+            companies=[]
+
+            for company in repo[0]['active_ingredient'][0]:
+                company.append(company)
             self.wfile.write(bytes(companies, "utf8"))
 
         elif "listDrugs" in path:
+            headers = {'id': 'http-client'}
 
-        elif "listCompanies" in path:
-
-
-
-
-    def searchDrug(self, drug):
-        conn = http.client.HTTPSConnection("api.fda.gov")
-        conn.request("GET", "/drug/label.json", None, headers)
-        r1 = conn.getresponse()
-        print(r1.status, r1.reason)
-        repos_raw = r1.read().decode("utf-8")
-        conn.close()
-        repo = json.loads(repos_raw)
-        repo = repo['results']
-        drugs=[]
-        for element in drug:
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            conn.request("GET", "/drug/label.json/listDrugs", None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
+            repo = json.loads(repos_raw)
+            repo = repo['results']
+            drugs=str(repo)
             for drug in repo[0]['active_ingredient'][0]:
                 drugs.append(drug)
-        return drugs
+            self.wfile.write(bytes(drugs, "utf8"))
 
-    def searchCompany(self,company):
-        conn = http.client.HTTPSConnection("api.fda.gov")
-        conn.request("GET", "/drug/label.json", None, headers)
-        r1 = conn.getresponse()
-        print(r1.status, r1.reason)
-        repos_raw = r1.read().decode("utf-8")
-        conn.close()
-        repo = json.loads(repos_raw)
-        repo = repo['results']
-        companies = []
-        for element in company:
-            for company in repo[0]['openfda']['manufacturer_name']:
+        elif "listCompanies" in path:
+            headers = {'id': 'http-client'}
+
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            conn.request("GET", "/drug/label.json/listCompanies", None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
+            repo = json.loads(repos_raw)
+            repo = repo['results']
+            companies = str(repo)
+            for company in repo[0]['openfda']['manufacturer_name'[0]:
                 companies.append(company)
-        return companies
-
-
-
-
-
-
+            self.wfile.write(bytes(companies, "utf8"))
 
             return
 
