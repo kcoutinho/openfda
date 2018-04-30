@@ -5,7 +5,7 @@
 <body>
     <h1>Application for searching information about drugs(OpenFDA)</h1>
 <form>
-    Drug Label <input name="label" type="text"><br>
+    Active ingredient of the drug <input name="active_ingredient" type="text"><br>
     Limit: <input name="limit" type="text"><br>
     <input type="submit">
 </form>
@@ -13,17 +13,12 @@
     Name of the company: <input name="company_name" type="text"><br>
     <input type="submit">
 </form>
+
 <form action="listDrugs">
-    List of drugs:
-    <input type="submit">
-</form>
-<form action="listDrugs">
-    List of drugs:
-    <input type="submit">
+    List of drugs: <ul></ul>
 </form>
 <form action="listCompanies">
-    List of companies:
-    <input type="submit">
+    List of companies:<ul></ul>
 </form>
 
 </body>

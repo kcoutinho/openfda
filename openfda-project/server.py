@@ -22,7 +22,7 @@ class openfda(http.server.BaseHTTPRequestHandler):
         end = "</ul>" + "\n" + "</html>"
 
         if path == "/":
-            with open("search_openfda.html", "r") as f:
+            with open("html_response.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
@@ -93,10 +93,20 @@ class openfda(http.server.BaseHTTPRequestHandler):
             conn.close()
             repo = json.loads(repos_raw)
             repo = repo['results']
-            drugs=str(repo)
+            drugs=[]
+
             for drug in repo[0]['active_ingredient'][0]:
                 drugs.append(drug)
-            self.wfile.write(bytes(drugs, "utf8"))
+
+            with open('listDrugs.html','w') as f:
+                f.write(beginning)
+                drugs=str(drugs)
+                drugs= "<li>" + drugs + "</li>"
+                f.write(drugs)
+                f.write(end)
+            with open('listDrugs.html','r') as f:
+                response = f.read()
+                self.wfile.write(bytes(response, "utf8"))
 
         elif "listCompanies" in path:
             headers = {'id': 'http-client'}
@@ -109,10 +119,19 @@ class openfda(http.server.BaseHTTPRequestHandler):
             conn.close()
             repo = json.loads(repos_raw)
             repo = repo['results']
-            companies = str(repo)
-            for company in repo[0]['openfda']['manufacturer_name'[0]:
+            companies=[]
+            for company in repo[0]['openfda']['manufacturer_name'[0]]:
                 companies.append(company)
-            self.wfile.write(bytes(companies, "utf8"))
+
+            with open('searchCompany.html', 'w') as f:
+                f.write(beginning)
+                companies = str(companies)
+                companies = "<li>" + companies + "</li>"
+                f.write(companies)
+                f.write(end)
+            with open('searchCompany.html', 'r') as f:
+                response = f.read()
+            self.wfile.write(bytes(response, "utf8"))
 
             return
 
