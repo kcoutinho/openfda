@@ -19,17 +19,10 @@ class openfda(http.server.BaseHTTPRequestHandler):
         path= self.path
 
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
-        end = "</ol>" + "\n" + "</html>"
-
-        with open("file_openfda.html", "w") as f:
-            f.write(beginning)
-            for something in result:
-                result = "<li>" + something + "</li>"
-                f.write(result)
-            f.write(end)
+        end = "</ul>" + "\n" + "</html>"
 
         if path == "/":
-            with open("html_response.html", "r") as f:
+            with open("search_openfda.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
@@ -45,11 +38,22 @@ class openfda(http.server.BaseHTTPRequestHandler):
             conn.close()
             repo = json.loads(repos_raw)
             repo = repo['results']
-            drugs = str(repo)
-            for element in repo:
-                for drug in repo[0]['active_ingredient'][0]:
-                    drugs.append(drug)
-            self.wfile.write(bytes(drugs, "utf8"))
+            drugs=[]
+
+            for drug in repo[0]['active_ingredient'][0]:
+                drugs.append(drug)
+
+            with open('searchDrug.html','w') as f:
+                f.write(beginning)
+                drugs=str(drugs)
+                drugs= "<li>" + drugs + "</li>"
+                f.write(drugs)
+                f.write(end)
+            with open('searchDrug.html','r') as f:
+                response = f.read()
+                self.wfile.write(bytes(response, "utf8"))
+
+
 
         elif "searchCompany" in path:
             headers = {'id': 'http-client'}
@@ -66,8 +70,17 @@ class openfda(http.server.BaseHTTPRequestHandler):
             companies=[]
 
             for company in repo[0]['active_ingredient'][0]:
-                company.append(company)
-            self.wfile.write(bytes(companies, "utf8"))
+                companies.append(company)
+
+            with open('searchCompany.html','w') as f:
+                f.write(beginning)
+                companies=str(companies)
+                companies= "<li>" + companies + "</li>"
+                f.write(companies)
+                f.write(end)
+            with open('searchCompany.html','r') as f:
+                response = f.read()
+                self.wfile.write(bytes(response, "utf8"))
 
         elif "listDrugs" in path:
             headers = {'id': 'http-client'}
