@@ -92,11 +92,11 @@ class openfda(http.server.BaseHTTPRequestHandler):
             repos_raw = r1.read().decode("utf-8")
             conn.close()
             repo = json.loads(repos_raw)
-            repo = repo['results']
             drugs=[]
 
             for drug in repo[0]['active_ingredient'][0]:
                 drugs.append(drug)
+
 
             with open('listDrugs.html','w') as f:
                 f.write(beginning)
