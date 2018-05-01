@@ -3,11 +3,11 @@ import socketserver
 import http.client
 import json
 socketserver.TCPServer.allow_reuse_adress = True
-IP="localhost"
-PORT = 8000
+IP = "localhost"
+PORT = 8001
 
 # HTTPRequestHandler class
-class openfda(http.server.BaseHTTPRequestHandler):
+class OpenFDA(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
         # Send response status code
@@ -61,7 +61,9 @@ class openfda(http.server.BaseHTTPRequestHandler):
             components = self.path.split("?")[1]
             company_comp = components.split("&")[0].split("=")[1]
             limit = components.split("&")[1].split("=")[1]
-            conn.request("GET","/drug/label.json?search=company_name:" + company_comp + "&" + "limit=" + limit, None, headers)
+            url = "/drug/label.json?search=active_ingredient:" +  + "&" + "limit=" + limit
+            print(url)
+            conn.request("GET","/drug/label.json?", None, headers)
             r1 = conn.getresponse()
             repos_raw = r1.read().decode("utf-8")
             conn.close()
@@ -96,8 +98,6 @@ class openfda(http.server.BaseHTTPRequestHandler):
 
             for drug in repo[0]['active_ingredient'][0]:
                 drugs.append(drug)
-
-
             with open('listDrugs.html','w') as f:
                 f.write(beginning)
                 drugs=str(drugs)
@@ -107,6 +107,7 @@ class openfda(http.server.BaseHTTPRequestHandler):
             with open('listDrugs.html','r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
+
 
         elif "listCompanies" in path:
             headers = {'id': 'http-client'}
@@ -131,12 +132,12 @@ class openfda(http.server.BaseHTTPRequestHandler):
                 f.write(end)
             with open('searchCompany.html', 'r') as f:
                 response = f.read()
-            self.wfile.write(bytes(response, "utf8"))
+                self.wfile.write(bytes(response, "utf8"))
 
             return
 
 #Handler = http.server.SimpleHTTPRequestHandler
-Handler = openfda
+Handler = OpenFDA
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 print("serving at port", PORT)
