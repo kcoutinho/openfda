@@ -2,9 +2,10 @@ import http.server
 import socketserver
 import http.client
 import json
-socketserver.TCPServer.allow_reuse_adress = True
+
 IP = "localhost"
-PORT = 8000
+PORT = 8001
+socketserver.TCPServer.allow_reuse_adress = True
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -32,7 +33,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             components = path.split("?")[1]
             drug_comp = components.split("&")[0].split("=")[1]
             limit = components.split("&")[1].split("=")[1]
-            conn.request("GET","/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit, None, headers)
+            url="/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
+            conn.request("GET",url, None, headers)
             r1 = conn.getresponse()
             repos_raw = r1.read().decode("utf-8")
             conn.close()
