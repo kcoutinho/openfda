@@ -4,10 +4,10 @@ import http.client
 import json
 socketserver.TCPServer.allow_reuse_adress = True
 IP = "localhost"
-PORT = 8001
+PORT = 8000
 
 # HTTPRequestHandler class
-class OpenFDA(http.server.BaseHTTPRequestHandler):
+class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
         # Send response status code
@@ -29,7 +29,7 @@ class OpenFDA(http.server.BaseHTTPRequestHandler):
         elif "searchDrug" in path:
             headers = {'id': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = self.path.split("?")[1]
+            components = path.split("?")[1]
             drug_comp = components.split("&")[0].split("=")[1]
             limit = components.split("&")[1].split("=")[1]
             conn.request("GET","/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit, None, headers)
@@ -61,7 +61,7 @@ class OpenFDA(http.server.BaseHTTPRequestHandler):
             components = self.path.split("?")[1]
             company_comp = components.split("&")[0].split("=")[1]
             limit = components.split("&")[1].split("=")[1]
-            url = "/drug/label.json?search=active_ingredient:" +  + "&" + "limit=" + limit
+            url = "/drug/label.json?search=company:" + company_comp + "&" + "limit=" + limit
             print(url)
             conn.request("GET","/drug/label.json?", None, headers)
             r1 = conn.getresponse()
@@ -71,7 +71,7 @@ class OpenFDA(http.server.BaseHTTPRequestHandler):
             repo= repo['results']
             companies=[]
 
-            for company in repo[0]['active_ingredient'][0]:
+            for company in repo[0]['openfda']['manufacturer_name'[0]]:
                 companies.append(company)
 
             with open('searchCompany.html','w') as f:
@@ -124,20 +124,20 @@ class OpenFDA(http.server.BaseHTTPRequestHandler):
             for company in repo[0]['openfda']['manufacturer_name'[0]]:
                 companies.append(company)
 
-            with open('searchCompany.html', 'w') as f:
+            with open('listCompany.html', 'w') as f:
                 f.write(beginning)
                 companies = str(companies)
                 companies = "<li>" + companies + "</li>"
                 f.write(companies)
                 f.write(end)
-            with open('searchCompany.html', 'r') as f:
+            with open('listCompany.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
             return
 
 #Handler = http.server.SimpleHTTPRequestHandler
-Handler = OpenFDA
+Handler = testHTTPRequestHandler
 
 httpd = socketserver.TCPServer(("", PORT), Handler)
 print("serving at port", PORT)
