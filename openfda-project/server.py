@@ -4,7 +4,7 @@ import http.client
 import json
 
 IP = "localhost"
-PORT = 8001
+PORT = 8000
 socketserver.TCPServer.allow_reuse_adress = True
 
 # HTTPRequestHandler class
@@ -17,7 +17,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type','text/html')
         self.end_headers()
 
-        path= self.path
+        path= self.path.split("?")[0]
 
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
@@ -47,8 +47,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             with open('searchDrug.html','w') as f:
                 f.write(beginning)
-                drugs=str(drugs)
-                drugs= "<li>" + drugs + "</li>"
+                drugs = str(drugs)
+                drugs = "<li>" + drugs + "</li>"
                 f.write(drugs)
                 f.write(end)
             with open('searchDrug.html','r') as f:
