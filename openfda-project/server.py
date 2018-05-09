@@ -4,20 +4,21 @@ import http.client
 import json
 
 IP = "localhost"
-PORT = 8000
-socketserver.TCPServer.allow_reuse_adress = True
+PORT = 8001
+socketserver.TCPServer.allow_reuse_address = True
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
+        headers = {'User-Agent': 'http-client'}
         # Send response status code
         self.send_response(200)
         # Send headers
         self.send_header('Content-type','text/html')
         self.end_headers()
 
-        path= self.path.split("?")[0]
+        path= self.path
 
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
@@ -28,11 +29,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "searchDrug" in path:
-            headers = {'id': 'http-client'}
+
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = path.split("?")[1]
-            drug_comp = components.split("&")[0].split("=")[1]
-            limit = components.split("&")[1].split("=")[1]
+            drug_comp = self.path.split("&")[0].split("=")[1]
+            limit = self.path.split("&")[1].split("=")[1]
             url="/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
             conn.request("GET",url, None, headers)
             r1 = conn.getresponse()
@@ -44,6 +44,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             for drug in repo[0]['active_ingredient'][0]:
                 drugs.append(drug)
+
 
             with open('searchDrug.html','w') as f:
                 f.write(beginning)
