@@ -31,19 +31,20 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         elif "searchDrug" in path:
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            drug_comp = self.path.split("&")[0].split("=")[1]
-            limit = self.path.split("&")[1].split("=")[1]
+            drug_comp = path.split("&")[0].split("=")[1]
+            limit = path.split("&")[1].split("=")[1]
             url="/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
             conn.request("GET",url, None, headers)
             r1 = conn.getresponse()
             repos_raw = r1.read().decode("utf-8")
             conn.close()
-            repo = json.loads(repos_raw)
-            repo = repo['results']
+            message = json.loads(repos_raw)
+            message= str(repos_raw)
             drugs=[]
 
-            for drug in repo[0]['active_ingredient'][0]:
+            for drug in repo[0]['openfda']["brand_name"][0]:
                 drugs.append(drug)
+            print(drugs)
 
 
             with open('searchDrug.html','w') as f:
