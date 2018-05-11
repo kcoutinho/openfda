@@ -31,14 +31,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         elif "searchDrug" in path:
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            drug_comp = path.split("&")[0].split("=")[1]
-            limit = path.split("&")[1].split("=")[1]
-            url="/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
+            component= path.split("?")[1]
+            drug_comp = component.split("&")[0].split("=")[1]
+            url="/drug/label.json?search=active_ingredient:" + drug_comp
             conn.request("GET",url, None, headers)
             r1 = conn.getresponse()
             drugs_info = r1.read().decode("utf-8")
             conn.close()
-            message = json.loads(drugs_info)
+            drugs_info = json.loads(drugs_info)
             drugs_info=drugs_info["results"]
             drugs=[]
 
