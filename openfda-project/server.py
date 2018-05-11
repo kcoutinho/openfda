@@ -36,22 +36,26 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             url="/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
             conn.request("GET",url, None, headers)
             r1 = conn.getresponse()
-            repos_raw = r1.read().decode("utf-8")
+            drugs_info = r1.read().decode("utf-8")
             conn.close()
-            message = json.loads(repos_raw)
-            message= str(repos_raw)
+            message = json.loads(drugs_info)
+            drugs_info=drugs_info["results"]
             drugs=[]
 
-            for drug in repo[0]['openfda']["brand_name"][0]:
-                drugs.append(drug)
+            for i in range(drugs_info):
+                if "active_ingredient" in drugs_info[i]:
+                    drugs.append(drugs_info[i]["active_ingredient"][0])
+                else:
+                    drugs.append("Any active ingredient has been assigned to this index")
             print(drugs)
 
 
             with open('searchDrug.html','w') as f:
                 f.write(beginning)
                 drugs = str(drugs)
-                drugs = "<li>" + drugs + "</li>"
-                f.write(drugs)
+                for drug in drugs:
+                    drugs = "<li>" + drug + "</li>"
+                    f.write(drug)
                 f.write(end)
             with open('searchDrug.html','r') as f:
                 response = f.read()
