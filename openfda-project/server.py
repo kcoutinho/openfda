@@ -2,7 +2,6 @@ import http.server
 import socketserver
 import http.client
 import json
-import urllib.parse
 
 IP = "localhost"
 PORT = 8000
@@ -46,9 +45,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     drugs = "<li>" + drug + "</li>"
                     f.write(drugs)
                 f.write(end)
-
-
-
 
         def searching_companies():
             headers = {'id': 'http-client'}
@@ -152,7 +148,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
         if path == "/":
-            with open("html_response.html", "r") as f:
+            with open("search.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
@@ -187,7 +183,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
-            
+
 
             return
 
