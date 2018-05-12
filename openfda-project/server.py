@@ -107,9 +107,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             drugs = []
             limit_int=int(limit_drug)
             for i in range(0,limit_int-1):
-                drugs.append(drugs_info)
-            for i in range(drugs_info[i]["openfda"]["brand_name"][0]):
-                if "active_ingredient" in drugs_info[i]:
+                if "active_ingredient" in drugs_info[i]["active_ingredient"][0]:
                     drugs.append(drugs_info[i]["active_ingredient"][0])
                 else:
                     drugs.append("Any active ingredient has been assigned to this index")
@@ -148,6 +146,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open('listCompany.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
+            if "listWarnings" in path:
+                
 
             return
 
