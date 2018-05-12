@@ -2,61 +2,59 @@ import http.server
 import socketserver
 import http.client
 import json
+import urllib.parse
 
 IP = "localhost"
-PORT = 8001
+PORT = 8000
 socketserver.TCPServer.allow_reuse_address = True
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
-        headers = {'User-Agent': 'http-client'}
-        # Send response status code
+
         self.send_response(200)
-        # Send headers
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-
-
         path= self.path
-
+        component=path.split("?")[0]
 
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
 
-        if path == "/":
+        if component == "/":
             with open("html_response.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
-        elif "searchDrug" in path:
+        elif component == "/searchDrug":
+            headers = {'id': 'http-client'}
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = path.split("?")[1]
+            components = path.split('?')[1]
             drug_comp = components.split("&")[0].split("=")[1]
-            url="/drug/label.json?search=active_ingredient:" + drug_comp
+            url = "/drug/label.json?search=active_ingredient:" + drug_comp
             conn.request("GET",url, None, headers)
             r1 = conn.getresponse()
-            drugs_info = r1.read().decode("utf-8")
+            print(r1.status, r1.reason)
+            drugs_raw = r1.read().decode("utf-8")
             conn.close()
-            drugs_in = json.loads(drugs_info)
+            repo = json.loads(drugs_raw)
+            drugs_info = repo['results']
             drugs=[]
 
-            for i in range(drugs_in["results"]):
+            for i in range(drugs_info):
                 if "active_ingredient" in drugs_info[i]:
                     drugs.append(drugs_info[i]["active_ingredient"][0])
                 else:
                     drugs.append("Any active ingredient has been assigned to this index")
-            print(drugs)
-
-
+            print("the:",drugs)
             with open('searchDrug.html','w') as f:
                 f.write(beginning)
                 drugs = str(drugs)
                 for drug in drugs:
                     drugs = "<li>" + drug + "</li>"
-                    f.write(drug)
+                    f.write(drugs)
                 f.write(end)
             with open('searchDrug.html','r') as f:
                 response = f.read()
