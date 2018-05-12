@@ -15,10 +15,12 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # Send response status code
         self.send_response(200)
         # Send headers
-        self.send_header('Content-type','text/html')
+        self.send_header('Content-type', 'text/html')
         self.end_headers()
 
+
         path= self.path
+
 
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
@@ -31,18 +33,17 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         elif "searchDrug" in path:
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            component= path.split("?")[1]
-            drug_comp = component.split("&")[0].split("=")[1]
+            components = path.split("?")[1]
+            drug_comp = components.split("&")[0].split("=")[1]
             url="/drug/label.json?search=active_ingredient:" + drug_comp
             conn.request("GET",url, None, headers)
             r1 = conn.getresponse()
             drugs_info = r1.read().decode("utf-8")
             conn.close()
-            drugs_info = json.loads(drugs_info)
-            drugs_info=drugs_info["results"]
+            drugs_in = json.loads(drugs_info)
             drugs=[]
 
-            for i in range(drugs_info):
+            for i in range(drugs_in["results"]):
                 if "active_ingredient" in drugs_info[i]:
                     drugs.append(drugs_info[i]["active_ingredient"][0])
                 else:
@@ -93,9 +94,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "listDrugs" in path:
-            headers = {'id': 'http-client'}
 
             conn = http.client.HTTPSConnection("api.fda.gov")
+            components= path.strip("label.json?").split("=")
             conn.request("GET", "/drug/label.json/listDrugs", None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
