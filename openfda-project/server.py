@@ -92,7 +92,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "listDrugs" in path:
-            headers = {'id': 'http-client'}
+            headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components= path.strip("label.json?").split("=")
             limit_drug=components[1]
@@ -114,8 +114,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open('listDrugs.html','w') as f:
                 f.write(beginning)
                 for drug in drugs:
-                    drugs= "<li>" + drug + "</li>"
-                f.write(drugs)
+                    list_drugs= "<li>" + drug + "</li>"
+                    f.write(list_drugs)
                 f.write(end)
             with open('listDrugs.html','r') as f:
                 response = f.read()
@@ -138,6 +138,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 companies.append(company)
 
             with open('listCompany.html', 'w') as f:
+
                 f.write(beginning)
                 companies = str(companies)
                 companies = "<li>" + companies + "</li>"
@@ -146,8 +147,36 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open('listCompany.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
-            if "listWarnings" in path:
-                
+        elif "listWarnings" in path:
+
+            headers = {'User-Agent': 'http-client'}
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            components = path.strip("label.json?").split("=")
+            limit_warning = components[1]
+            url = "/drug/label.json?limit=" + limit_warning
+            conn.request("GET", url, None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            warning_info = r1.read().decode("utf-8")
+            conn.close()
+            warning_info = json.loads(warning_info)
+            warning_info = warning_info["results"]
+            warnings = []
+            limit_int = int(limit_warning)
+            for i in range(0, limit_int - 1):
+                if "active_ingredient" in warning_info[i]["active_ingredient"][0]:
+                    warnings.append(warning_info[i]["active_ingredient"][0])
+                else:
+                    warnings.append("Any active ingredient has been assigned to this index")
+            with open('listDrugs.html', 'w') as f:
+                f.write(beginning)
+                for warning in warnings:
+                    list_warnings = "<li>" + warning + "</li>"
+                    f.write(list_warnings)
+                f.write(end)
+            with open('listWarnings.html', 'r') as f:
+                response = f.read()
+                self.wfile.write(bytes(response, "utf8"))
 
             return
 
