@@ -18,6 +18,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         path= self.path
         component=path.split("?")[0]
+        def searching_drugs():
+
 
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
