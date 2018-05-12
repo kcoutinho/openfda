@@ -27,9 +27,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
-        elif component == "/searchDrug":
+        elif "searchDrug" in path:
             headers = {'id': 'http-client'}
-
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = path.split('?')[1]
             drug_comp = components.split("&")[0].split("=")[1]
@@ -59,7 +58,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open('searchDrug.html','r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
-
 
 
         elif "searchCompany" in path:
@@ -126,7 +124,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             headers = {'id': 'http-client'}
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            conn.request("GET", "/drug/label.json/listCompanies", None, headers)
+            url= "/drug/label.json/listCompanies"
+            conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
             repos_raw = r1.read().decode("utf-8")
