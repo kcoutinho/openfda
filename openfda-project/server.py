@@ -12,6 +12,10 @@ socketserver.TCPServer.allow_reuse_address = True
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        path = self.path
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
         def searching_drugs():
@@ -34,7 +38,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     drugs.append(drugs_info[i]["active_ingredient"][0])
                 else:
                     drugs.append("Any active ingredient has been assigned to this index")
-            print("the:", drugs)
+
             with open('searchDrug.html', 'w') as f:
                 f.write(beginning)
                 drugs = str(drugs)
@@ -42,14 +46,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     drugs = "<li>" + drug + "</li>"
                     f.write(drugs)
                 f.write(end)
-            def searching_companies():
 
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        path= self.path
-        component=path.split("?")[0]
-        def searching_drugs():
+
+
+
+        def searching_companies():
             headers = {'id': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = path.split("?")[1]
@@ -75,31 +76,31 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 f.write(companies)
                 f.write(end)
         def listing_drugs():
-                headers = {'User-Agent': 'http-client'}
-                conn = http.client.HTTPSConnection("api.fda.gov")
-                components = path.strip("label.json?").split("=")
-                limit_drug = components[1]
-                url = "/drug/label.json?limit=" + limit_drug
-                conn.request("GET", url, None, headers)
-                r1 = conn.getresponse()
-                print(r1.status, r1.reason)
-                drugs_info = r1.read().decode("utf-8")
-                conn.close()
-                drugs_info = json.loads(drugs_info)
-                drugs_info = drugs_info["results"]
-                drugs = []
-                limit_int = int(limit_drug)
-                for i in range(0, limit_int - 1):
-                    if "active_ingredient" in drugs_info[i]["active_ingredient"][0]:
-                        drugs.append(drugs_info[i]["active_ingredient"][0])
-                    else:
-                        drugs.append("Any active ingredient has been assigned to this index")
-                with open('listDrugs.html', 'w') as f:
-                    f.write(beginning)
-                    for drug in drugs:
-                        list_drugs = "<li>" + drug + "</li>"
-                        f.write(list_drugs)
-                    f.write(end)
+            headers = {'User-Agent': 'http-client'}
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            components = path.strip("label.json?").split("=")
+            limit_drug = components[1]
+            url = "/drug/label.json?limit=" + limit_drug
+            conn.request("GET", url, None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            drugs_info = r1.read().decode("utf-8")
+            conn.close()
+            drugs_info = json.loads(drugs_info)
+            drugs_info = drugs_info["results"]
+            drugs = []
+            limit_int = int(limit_drug)
+            for i in range(0, limit_int - 1):
+                if "active_ingredient" in drugs_info[i]["active_ingredient"][0]:
+                    drugs.append(drugs_info[i]["active_ingredient"][0])
+                else:
+                    drugs.append("Any active ingredient has been assigned to this index")
+            with open('listDrugs.html', 'w') as f:
+                f.write(beginning)
+                for drug in drugs:
+                    list_drugs = "<li>" + drug + "</li>"
+                    f.write(list_drugs)
+                f.write(end)
         def listing_companies():
             headers = {'id': 'http-client'}
 
@@ -150,47 +151,43 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 f.write(end)
 
 
-
-
-
-
-
-        if component == "/":
+        if path == "/":
             with open("html_response.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "searchDrug" in path:
-
+            searching_drugs()
             with open('searchDrug.html','r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
 
         elif "searchCompany" in path:
-
+            searching_companies()
             with open('searchCompany.html','r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "listDrugs" in path:
-
+            listing_drugs()
             with open('listDrugs.html','r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
 
         elif "listCompanies" in path:
-
+            listing_companies()
             with open('listCompany.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
         elif "listWarnings" in path:
-
-
+            listing_warnings()
             with open('listWarnings.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
+
+            
 
             return
 
