@@ -143,7 +143,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             list_companies = []
             n = 0
             iterate = int(limit)
-            message = "<head>" + "<h3>" + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#FA8258'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + "<h3>" + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F2F5A9'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
                     list_companies.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
@@ -163,28 +163,32 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = path.strip("label.json?").split("=")
-            limit_warning = components[1]
-            url = "/drug/label.json?limit=" + limit_warning
+            limit = components[1]
+            url = "/drug/label.json?limit=" + limit
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
-            warning_info = r1.read().decode("utf-8")
+            warnings_raw = r1.read().decode("utf-8")
             conn.close()
-            warning_info = json.loads(warning_info)
-            warning_info = warning_info["results"]
-            warnings = []
-            limit_int = int(limit_warning)
-            for i in range(0, limit_int - 1):
-                if "active_ingredient" in warning_info[i]["active_ingredient"][0]:
-                    warnings.append(warning_info[i]["active_ingredient"][0])
-                else:
-                    warnings.append("Any active ingredient has been assigned to this index")
-            with open('listDrugs.html', 'w') as f:
-                f.write(beginning)
-                for warning in warnings:
-                    list_warnings = "<li>" + warning + "</li>"
-                    f.write(list_warnings)
-                f.write(end)
+            company_repo = json.loads(warnings_raw)
+            list_warnings = []
+            n = 0
+            iterate = int(limit)
+            message = "<head>" + "<h3>" + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
+            while n < iterate:
+                try:
+                    list_warnings.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
+                    n += 1
+                except:
+                    list_warnings.append("Not known")
+                    print("Any warning has been assigned to this index")
+                    n += 1
+
+                with open('listCompanies.html', 'w') as f:
+                    f.write(message)
+                    for company in list_companies:
+                        list_companies = "<t>" + "<li>" + company
+                        f.write(list_companies)
 
         if path == "/":
             self.send_response(200)
