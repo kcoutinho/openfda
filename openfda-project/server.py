@@ -17,12 +17,22 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         path = self.path
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
+
         def searching_drugs():
-            headers = {'id': 'http-client'}
+
+            headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = path.split('?')[1]
             drug_comp = components.split("&")[0].split("=")[1]
-            url = "/drug/label.json?search=active_ingredient:" + drug_comp
+
+            if "limit" in path:
+                limit = components.split("&")[1].split("=")[1]
+                if limit=="":
+                    limit="20"
+            else:
+                limit="20"
+
+            url = "/drug/label.json?search=active_ingredient:" + drug_comp + "limit=" + limit
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
@@ -31,10 +41,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             repo = json.loads(drugs_raw)
             drugs_info = repo['results']
             drugs = []
+            iterate=int(limit)
 
-            for i in range(drugs_info):
+            for i in range(0,iterate-1):
                 if "active_ingredient" in drugs_info[i]:
-                    drugs.append(drugs_info[i]["active_ingredient"][0])
+                    drugs.append(drugs_info[i]["openfda"]["brand_name"][0])
                 else:
                     drugs.append("Any active ingredient has been assigned to this index")
 
@@ -71,6 +82,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 companies = "<li>" + companies + "</li>"
                 f.write(companies)
                 f.write(end)
+
         def listing_drugs():
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
