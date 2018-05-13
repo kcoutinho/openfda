@@ -191,9 +191,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                         f.write(list_companies)
 
         if path == "/":
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
             with open("search.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
@@ -212,27 +209,19 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "listDrugs" in path:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
             listing_drugs()
             with open('listDrugs.html','r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
-
         elif "listCompanies" in path:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
+
             listing_companies()
             with open('listCompany.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
         elif "listWarnings" in path:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
+
             listing_warnings()
             with open('listWarnings.html', 'r') as f:
                 response = f.read()
