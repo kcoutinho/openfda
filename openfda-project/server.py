@@ -7,14 +7,10 @@ IP = "localhost"
 PORT = 8000
 socketserver.TCPServer.allow_reuse_address = True
 
-# HTTPRequestHandler class
-class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
+class testHTTPRequestHand(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        path = self.path
+        path=self.path
         beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
         end = "</ul>" + "\n" + "</html>"
 
@@ -160,11 +156,17 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
         if path == "/":
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             with open("search.html", "r") as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "searchDrug" in path:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             searching_drugs()
             with open('searchDrug.html','r') as f:
                 response = f.read()
@@ -172,12 +174,18 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
         elif "searchCompany" in path:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             searching_companies()
             with open('searchCompany.html','r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "listDrugs" in path:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             listing_drugs()
             with open('listDrugs.html','r') as f:
                 response = f.read()
@@ -185,11 +193,17 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
         elif "listCompanies" in path:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             listing_companies()
             with open('listCompany.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
         elif "listWarnings" in path:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             listing_warnings()
             with open('listWarnings.html', 'r') as f:
                 response = f.read()
