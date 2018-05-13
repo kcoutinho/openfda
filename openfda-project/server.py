@@ -6,6 +6,8 @@ import json
 IP = "localhost"
 PORT = 8000
 socketserver.TCPServer.allow_reuse_address = True
+
+
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
@@ -19,8 +21,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components= path.strip("/search?").split("&")
-            components = components[0].split("=")[1]
-            drug_comp = components.split("&")[0].split("=")[1]
+            drug_comp = components[0].split("=")[1]
 
             if "limit" in path:
                 limit = components[1].split("=")[1]
@@ -38,23 +39,26 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             drugs_repo = json.loads(drugs_raw)
             drugs_repo = drugs_repo['results']
             drugs = []
-            iterate=int(limit)
+            n=0
+            iterate = int(limit)
             beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
             end = "</ul>" + "\n" + "</html>"
-
-            for i in range(0,iterate-1):
-                if "active_ingredient" in drugs_repo[i]:
+            while n < iterate:
+                try:
                     drugs.append(drugs_repo[i]["openfda"]["brand_name"][0])
-                else:
-                    drugs.append("Any active ingredient has been assigned to this index")
+                    n += 1
+                except:
+                    drugs.append("Not known")
+                    print("Any active ingredient has been assigned to this index")
+                    n += 1
 
-            with open('searchDrug.html', 'w') as f:
-                f.write(beginning)
-                drugs = str(drugs)
-                for drug in drugs:
-                    drugs = "<li>" + drug + "</li>"
-                    f.write(drugs)
-                f.write(end)
+                with open('searchDrug.html', 'w') as f:
+                    f.write(beginning)
+                    drugs = str(drugs)
+                    for drug in drugs:
+                        drugs = "<t>" +"<li>" + drug
+                        f.write(drugs)
+                    f.write(end)
 
         def searching_companies():
             headers = {'id': 'http-client'}
@@ -215,10 +219,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open('listWarnings.html', 'r') as f:
                 response = f.read()
                 self.wfile.write(bytes(response, "utf8"))
-
-
-
-            return
+        return
 
 #Handler = http.server.SimpleHTTPRequestHandler
 Handler = testHTTPRequestHandler
