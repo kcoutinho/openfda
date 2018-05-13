@@ -6,24 +6,25 @@ import json
 IP = "localhost"
 PORT = 8000
 socketserver.TCPServer.allow_reuse_address = True
-
-class testHTTPRequestHand(http.server.BaseHTTPRequestHandler):
+class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
         path=self.path
-        beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
-        end = "</ul>" + "\n" + "</html>"
 
         def searching_drugs():
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = path.split('?')[1]
+            components= path.strip("/search?").split("&")
+            components = components[0].split("=")[1]
             drug_comp = components.split("&")[0].split("=")[1]
 
             if "limit" in path:
-                limit = components.split("&")[1].split("=")[1]
-                if limit=="":
+                limit = components[1].split("=")[1]
+                if limit == "":
                     limit="20"
             else:
                 limit="20"
@@ -34,14 +35,16 @@ class testHTTPRequestHand(http.server.BaseHTTPRequestHandler):
             print(r1.status, r1.reason)
             drugs_raw = r1.read().decode("utf-8")
             conn.close()
-            repo = json.loads(drugs_raw)
-            drugs_info = repo['results']
+            drugs_repo = json.loads(drugs_raw)
+            drugs_repo = drugs_repo['results']
             drugs = []
             iterate=int(limit)
+            beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
+            end = "</ul>" + "\n" + "</html>"
 
             for i in range(0,iterate-1):
-                if "active_ingredient" in drugs_info[i]:
-                    drugs.append(drugs_info[i]["openfda"]["brand_name"][0])
+                if "active_ingredient" in drugs_repo[i]:
+                    drugs.append(drugs_repo[i]["openfda"]["brand_name"][0])
                 else:
                     drugs.append("Any active ingredient has been assigned to this index")
 
@@ -58,19 +61,30 @@ class testHTTPRequestHand(http.server.BaseHTTPRequestHandler):
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = path.split("?")[1]
             company_comp = components.split("&")[0].split("=")[1]
-            limit = components.split("&")[1].split("=")[1]
+
+            if "limit" in path:
+                limit = components.split("&")[1].split("=")[1]
+                if limit=="":
+                    limit="20"
+            else:
+                limit="20"
             url = "/drug/label.json?search=company:" + company_comp + "&" + "limit=" + limit
             print(url)
             conn.request("GET", "/drug/label.json?", None, headers)
             r1 = conn.getresponse()
-            repos_raw = r1.read().decode("utf-8")
+            company_raw = r1.read().decode("utf-8")
             conn.close()
-            repo = json.loads(repos_raw)
-            repo = repo['results']
+            company_repo = json.loads(company_raw)
+            company_repo = company_repo['results']
             companies = []
-
-            for company in repo[0]['openfda']['manufacturer_name'[0]]:
-                companies.append(company)
+            iterate=int(limit)
+            beginning = "<!DOCTYPE html>" + "\n" + "<html>" + "\n" + "<ol>" + "\n"
+            end = "</ul>" + "\n" + "</html>"
+            for i in range(0,iterate-1):
+                if "manufacturer_name" in company_repo[i]:
+                    companies.append(company_repo[i]["openfda"]["brand_name"][0])
+                else:
+                    companies.append("Any manufacturer has been assigned to this index")
 
             with open('searchCompany.html', 'w') as f:
                 f.write(beginning)
@@ -154,7 +168,6 @@ class testHTTPRequestHand(http.server.BaseHTTPRequestHandler):
                     f.write(list_warnings)
                 f.write(end)
 
-
         if path == "/":
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -164,9 +177,6 @@ class testHTTPRequestHand(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(bytes(response, "utf8"))
 
         elif "searchDrug" in path:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
             searching_drugs()
             with open('searchDrug.html','r') as f:
                 response = f.read()
@@ -174,9 +184,6 @@ class testHTTPRequestHand(http.server.BaseHTTPRequestHandler):
 
 
         elif "searchCompany" in path:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
             searching_companies()
             with open('searchCompany.html','r') as f:
                 response = f.read()
