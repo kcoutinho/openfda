@@ -30,14 +30,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             else:
                 limit="20"
 
-            url = "/drug/label.json?search=active_ingredient:" + drug_comp + "limit=" + limit
+            url = "/drug/label.json?search=active_ingredient:" + drug_comp + "&"+ "limit=" + limit
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
             drugs_raw = r1.read().decode("utf-8")
             conn.close()
             drugs_repo = json.loads(drugs_raw)
-            drugs_repo = drugs_repo['results']
             drugs = []
             n=0
             iterate = int(limit)
@@ -45,7 +44,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             end = "</ul>" + "\n" + "</html>"
             while n < iterate:
                 try:
-                    drugs.append(drugs_repo[i]["openfda"]["brand_name"][0])
+                    drugs.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
                     n += 1
                 except:
                     drugs.append("Not known")
