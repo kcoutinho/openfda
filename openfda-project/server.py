@@ -14,7 +14,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        path=self.path
+        path = self.path
 
         def searching_drugs():
 
@@ -129,11 +129,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     print("Any drug has been assigned to this index")
                     n += 1
 
-                with open('listDrugs.html', 'w') as f:
-                    f.write(message)
-                    for drug in list_drugs:
-                        list_drugs = "<t>" + "<li>" + drug
-                        f.write(list_drugs)
+            with open('listDrugs.html', 'w') as f:
+                f.write(message)
+                for drug in list_drugs:
+                    list_drugs = "<t>" + "<li>" + drug
+                f.write(list_drugs)
 
         def listing_companies():
 
@@ -181,25 +181,33 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             print(r1.status, r1.reason)
             warnings_raw = r1.read().decode("utf-8")
             conn.close()
-            company_repo = json.loads(warnings_raw)
+            warning_repo = json.loads(warnings_raw)
+            warnings=[]
             list_warnings = []
             n = 0
+            m = 0
             iterate = int(limit)
             message = "<head>" + "<h3>" + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
-                    list_warnings.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
+                    warnings.append(warning_repo["results"][n]["openfda"]["brand_name"][0])
                     n += 1
                 except:
-                    list_warnings.append("Not known")
-                    print("Any warning has been assigned to this index")
+                    warnings.append("Unknown")
+                    n += 1
+            while m < iterate:
+                try:
+                    list_warnings.append(warning_repo["results"][n]["warnings"][0])
+                    n += 1
+                except:
+                    list_warnings.append("Unknown")
                     n += 1
 
-                with open('listCompanies.html', 'w') as f:
+                with open('listWarnings.html', 'w') as f:
                     f.write(message)
-                    for company in list_companies:
-                        list_companies = "<t>" + "<li>" + company
-                        f.write(list_companies)
+                    for warning in list_warnings:
+                        list_warnings = "<t>" + "<li>" + warning
+                        f.write(list_warnings)
 
         if path == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
             print("SEARCH: The client is searching a web")
