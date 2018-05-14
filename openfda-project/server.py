@@ -208,6 +208,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             ñ = 0
             iterate = int(limit)
             message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
+
             while n < iterate:
                 try:
                     warnings.append(warning_repo["results"][n]["openfda"]["brand_name"][0])
@@ -226,9 +227,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                 with open('warnings_list.html', 'w') as f:
                     f.write(message)
                     while ñ < iterate:
-                        for warning in list_warnings:
-                            list_warnings = "<t>" + "<li>" + warning
-                            f.write(list_warnings)
+                        for warning in warnings:
+                            list_warnings2 = "<t>" + "<li>" + "The warning for the" + warnings[ñ] + "is" + warning
+                            f.write(list_warnings2)
                             ñ += 1
 
         if route == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
