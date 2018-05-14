@@ -25,9 +25,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             if "limit" in path:
                 limit = components[1].split("=")[1]
                 if limit == "":
-                    limit="20"
+                    limit = "10"
             else:
-                limit="20"
+                limit = "10"
 
             url = "/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
             print(url)
@@ -42,7 +42,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             drugs = []
             n=0
             iterate = int(limit)
-            message = "<head>" + "<h3>" + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>""<ol>"+"\n"
+            message = "<head>" + "<h3>" + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
 
             while n < iterate:
                 try:
@@ -56,7 +56,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             with open('searchDrug.html', 'w') as f:
                 f.write(message)
                 for drug in drugs:
-                    drugs = "<t>" +"<li>" + drug
+                    drugs = "<t>" + "<li>" + drug
                     f.write(drugs)
 
         def searching_companies():
@@ -68,9 +68,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             if "limit" in path:
                 limit = components[1].split("=")[1]
                 if limit == "":
-                    limit = "20"
+                    limit = "10"
             else:
-                limit = "20"
+                limit = "10"
 
             url = "/drug/label.json?search=openfda.manufacturer_name:" + company_comp + "&" + "limit=" + limit
             print(url)
@@ -201,18 +201,19 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                         list_companies = "<t>" + "<li>" + company
                         f.write(list_companies)
 
-        if path == "/":
-            with open("search.html", "r") as f:
+        if path == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
+            print("SEARCH: The client is searching a web")
+            with open("search.html", "r") as f: #Then the file called search will be read by default.
                 response = f.read()
-                self.wfile.write(bytes(response, "utf8"))
+                self.wfile.write(bytes(response, "utf8")) #The response will be an html file with the corresponding information of search
 
-        elif 'searchDrug' in path:
-            searching_drugs()
-            with open("searchDrug.html","r") as f:
+        elif 'searchDrug' in path: #If the client introduce this option in the path, the corresponding function will be called.
+            searching_drugs() #The corresponding function will be called in order to be able to obtain its information.
+            with open("searchDrug.html","r") as f: #The file related with the function will be opened to be read
                 response = f.read()
-                self.wfile.write(bytes(response, "utf8"))
+                self.wfile.write(bytes(response, "utf8")) #Finally the response will be an html display.
 
-
+        #The same process will be followed by the different kind of options.
         elif "searchCompany" in path:
             searching_companies()
             with open('searchCompany.html','r') as f:
