@@ -11,21 +11,21 @@ socketserver.TCPServer.allow_reuse_address = True #This line of code is used in 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is going to be use to build the different components of the future response for the client
     # GET
     def do_GET(self):
-        path = self.path
-        if path == "/" or "searchDrug" in path or "searchCompany" in path or"listDrugs" in path or "listCompanies" in path or "listWarnings" in path:
+        route = self.path
+        if route == "/" or "searchDrug" in route or "searchCompany" in route or"listDrugs" in route or "listCompanies" in route or "listWarnings" in route:
             status_code = 200
-        elif "redirect" in path:
+        elif "redirect" in route:
             status_code = 302
-        elif "secret" in path:
+        elif "secret" in route:
             status_code = 401
         else:
             status_code = 404
         self.send_response(status_code)
-        if path == "/" or "searchDrug" in path or "searchCompany" in path or "listDrugs" in path or "listCompanies" in path or "listWarnings" in path:
+        if route == "/" or "searchDrug" in route or "searchCompany" in route or "listDrugs" in route or "listCompanies" in route or "listWarnings" in route:
             self.send_header('Content-type', 'text/html')
-        elif "redirect" in path:
+        elif "redirect" in route:
             self.send_header("Location","http://localhost:8000/")
-        elif "secret" in path:
+        elif "secret" in route:
             self.send_header("WWW-Authenticate", "Basic realm='OpenFDA Private Zone'")
         self.end_headers()
 
@@ -33,9 +33,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components= path.strip("/search?").split("&")
+            components= route.strip("/search?").split("&")
             drug_comp = components[0].split("=")[1]
-            if "limit" in path:
+            if "limit" in route:
                 limit = components[1].split("=")[1]
                 if limit == "":
                     limit = "15"
@@ -75,10 +75,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
         def searching_companies():
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = path.strip("/search?").split("&")
+            components = route.strip("/search?").split("&")
             company_comp = components[0].split("=")[1]
 
-            if "limit" in path:
+            if "limit" in route:
                 limit = components[1].split("=")[1]
                 if limit == "":
                     limit = "15"
@@ -118,7 +118,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = path.strip("label.json?").split("=")
+            components = route.strip("label.json?").split("=")
             limit = components[1]
             url = "/drug/label.json?limit=" + limit
             print(url)
@@ -152,7 +152,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = path.strip("label.json?").split("=")
+            components = route.strip("label.json?").split("=")
             limit = components[1]
             url = "/drug/label.json?limit=" + limit
             print(url)
@@ -184,7 +184,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
         def listing_warnings():
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = path.strip("label.json?").split("=")
+            components = route.strip("label.json?").split("=")
             limit = components[1]
             url = "/drug/label.json?limit=" + limit
             print(url)
@@ -225,42 +225,65 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                             f.write(list_warnings)
                             ñ += 1
 
-        if path == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
-            print("SEARCH: The client is searching a web")
-            with open("search.html", "r") as f: #Then the file called search will be read by default.
-                response = f.read()
-                self.wfile.write(bytes(response, "utf8")) #The response will be an html file with the corresponding information of search
+        if route == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
+            try:
+                print("SEARCH: The client is searching a web")
+                with open("search.html", "r") as f: #Then the file called search will be read by default.
+                    response = f.read()
+                    self.wfile.write(bytes(response, "utf8")) #The response will be an html file with the corresponding information of search
+            except KeyError:
+                print("ERROR")
+                print("Not found")
+                with open("error.html","r") as doc:
+                    response = doc.read()
+                    self.wfile.write(bytes(response, "utf8"))
 
-        elif 'searchDrug' in path: #If the client introduce this option in the path, the corresponding function will be called.
+        elif 'searchDrug' in route: #If the client introduce this option in the path, the corresponding function will be called.
             searching_drugs() #The corresponding function will be called in order to be able to obtain its information.
-            with open("searchDrug.html","r") as f: #The file related with the function will be opened to be read
-                response = f.read()
+            with open("searchDrug.html","r") as doc: #The file related with the function will be opened to be read
+                response = doc.read()
                 self.wfile.write(bytes(response, "utf8")) #Finally the response will be an html display.
 
         #The same process will be followed by the different kind of options.
-        elif "searchCompany" in path:
+        elif "searchCompany" in route:
             searching_companies()
-            with open('searchCompany.html','r') as f:
-                response = f.read()
+            with open('searchCompany.html','r') as doc:
+                response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
 
-        elif "listDrugs" in path:
+        elif "listDrugs" in route:
             listing_drugs()
-            with open('listDrugs.html','r') as f:
-                response = f.read()
+            with open('listDrugs.html','r') as doc:
+                response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
 
-        elif "listCompanies" in path:
+        elif "listCompanies" in route:
 
             listing_companies()
-            with open('listCompany.html', 'r') as f:
-                response = f.read()
+            with open('listCompany.html', 'r') as doc:
+                response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
-        elif "listWarnings" in path:
+        elif "listWarnings" in route:
 
             listing_warnings()
-            with open('listWarnings.html', 'r') as f:
-                response = f.read()
+            with open('listWarnings.html', 'r') as doc:
+                response = doc.read()
+                self.wfile.write(bytes(response, "utf8"))
+
+        elif "secret" in route:
+            with open('secret.html', 'r') as doc:
+                response = doc.read()
+                self.wfile.write(bytes(response, "utf8"))
+        elif "redirect" in route:
+            print("Go back to the previous web page")
+            with open('redirect.html', 'r') as doc:
+                response = doc.read()
+                self.wfile.write(bytes(response, "utf8"))
+        else:
+            print("ERROR")
+            print("Not found")
+            with open('error.html', 'r') as doc:
+                response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
         return
 
@@ -274,5 +297,7 @@ try:
 except KeyboardInterrupt:
     pass
 httpd.server_close()
+print("")
+print("Server stopped!")
 
 # https://github.com/joshmaker/simple-python-webserver/blob/master/server.py
