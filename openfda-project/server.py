@@ -67,86 +67,48 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     print("Any active ingredient has been assigned to this index")
                     n += 1
 
-            def searching_drugs():  # This
+        def searching_companies():  # This
 
-                headers = {'User-Agent': 'http-client'}
-                conn = http.client.HTTPSConnection("api.fda.gov")
-                components = route.strip("/search?").split("&")
-                drug_comp = components[0].split("=")[1]
-                if "limit" in route:
-                    limit1 = components[1].split("=")[1]
-                    if limit1 == "":
-                        limit1 = "25"
-                else:
+            headers = {'User-Agent': 'http-client'}
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            components = route.strip("/search?").split("&")
+            comp_comp = components[0].split("=")[1]
+            if "limit" in route:
+                limit1 = components[1].split("=")[1]
+                if limit1 == "":
                     limit1 = "25"
+            else:
+                limit1 = "25"
 
-                url = "/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit1
-                print(url)
+            url = "/drug/label.json?search=openfda.manufacturer_name:" + comp_comp + "&" + "limit=" + limit1
+            print(url)
 
-                conn.request("GET", url, None, headers)
-                r1 = conn.getresponse()
-                print(r1.status, r1.reason)
-                drugs_raw = r1.read().decode("utf-8")
-                conn.close()
-                drugs_repo = json.loads(drugs_raw)
+            conn.request("GET", url, None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            comp_raw = r1.read().decode("utf-8")
+            conn.close()
+            comp_repo = json.loads(comp_raw)
 
-                drugs = []
-                n = 0
-                iterate = int(limit1)
-                message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>" + "</head>" + "<ol>" + "\n"
+            drugs = []
+            n = 0
+            iterate = int(limit1)
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs produced by the manufacturer are the corresponding following ones:" + "<body style='background-color:#FA8258'>" + "</head>" + "<ol>" + "\n"
 
-                while n < iterate:
-                    try:
-                        drugs.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
-                        n += 1
-                    except:
-                        drugs.append("Unknown")
-                        print("Any active ingredient has been assigned to this index")
-                        n += 1
+            while n < iterate:
+                try:
+                    drugs.append(comp_repo["results"][n]["openfda"]["brand_name"][0])
+                    n += 1
+                except:
+                    drugs.append("Unknown")
+                    print("The manufacturer name has not been found!")
+                    n += 1
 
-            def searching_companies():  # This
-
-                headers = {'User-Agent': 'http-client'}
-                conn = http.client.HTTPSConnection("api.fda.gov")
-                components = route.strip("/search?").split("&")
-                comp_comp = components[0].split("=")[1]
-                if "limit" in route:
-                    limit1 = components[1].split("=")[1]
-                    if limit1 == "":
-                        limit1 = "25"
-                else:
-                    limit1 = "25"
-
-                url = "/drug/label.json?search=openfda.manufacturer_name:" + comp_comp + "&" + "limit=" + limit1
-                print(url)
-
-                conn.request("GET", url, None, headers)
-                r1 = conn.getresponse()
-                print(r1.status, r1.reason)
-                comp_raw = r1.read().decode("utf-8")
-                conn.close()
-                comp_repo = json.loads(comp_raw)
-
-                companies = []
-                n = 0
-                iterate = int(limit1)
-                message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs produced by the manufacturer are the corresponding following ones:" + "<body style='background-color:#FA8258'>" + "</head>" + "<ol>" + "\n"
-
-                while n < iterate:
-                    try:
-                        companies.append(comp_repo["results"][n]["openfda"]["brand_name"][0])
-                        n += 1
-                    except:
-                        drugs.append("Unknown")
-                        print("The manufacturer name has not been found!")
-                        n += 1
-
-                with open('manufacturer_name.html', 'w') as doc:
-                    doc.write(message)
-                    for company in companies:
-                        companies2 = "<t>" + "<li>" + company
-                        f.write(companies2)
-
+            with open('manufacturer_name.html', 'w') as doc:
+                doc.write(message)
+                for company in drugs:
+                    companies2 = "<t>" + "<li>" + company
+                    f.write(companies2)
 
         def listing_drugs():
 
