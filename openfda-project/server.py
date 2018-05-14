@@ -38,9 +38,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in route:
                 limit = components[1].split("=")[1]
                 if limit == "":
-                    limit = "15"
+                    limit = "25"
             else:
-                limit = "15"
+                limit = "25"
 
             url = "/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
             print(url)
@@ -81,9 +81,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in route:
                 limit = components[1].split("=")[1]
                 if limit == "":
-                    limit = "15"
+                    limit = "25"
             else:
-                limit = "15"
+                limit = "25"
 
             url = "/drug/label.json?search=openfda.manufacturer_name:" + company_comp + "&" + "limit=" + limit
             print(url)
