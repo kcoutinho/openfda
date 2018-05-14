@@ -148,11 +148,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     print("Any drug has been assigned to this index")
                     n += 1
 
-            with open('drugs_list.html', 'w') as f:
+            with open('listDrugs.html', 'w') as f:
                 f.write(message)
                 for drug in list_drugs:
                     list_drugs = "<t>" + "<li>" + drug
-                f.write(list_drugs)
+                    f.write(list_drugs)
 
         def listing_manufacturers():
 
@@ -181,7 +181,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     print("Any manufacturer has been assigned to this index")
                     n += 1
 
-            with open('companies_list.html', 'w') as f:
+            with open('listCompanies.html', 'w') as f:
                 f.write(message)
                 for company in list_companies:
                     list_companies = "<t>" + "<li>" + company
@@ -265,7 +265,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
         elif "listCompanies" in route:
             listing_manufacturers()
-            with open('listCompany.html', 'r') as doc:
+            with open('listCompanies.html', 'r') as doc:
                 response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
 
