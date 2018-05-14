@@ -104,7 +104,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             while n < iterate:
                 try:
-                    companies.append(repo["results"][n]["openfda"][0])
+                    companies.append(repo["results"][n]["openfda"]["brand_name"][0])
                     n += 1
                 except:
                     companies.append("Unknown")
@@ -155,7 +155,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = route.strip("label.json?").split("=")
+            components = route.strip("/listCompanies?").split("=")
             limit = components[1]
             url = "/drug/label.json?limit=" + limit
             print(url)
@@ -171,7 +171,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F2F5A9'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
-                    list_companies.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
+                    list_companies.append(company_repo["results"][n]["openfda"]["brand_name"][0])
                     n += 1
                 except:
                     list_companies.append("Not known")
