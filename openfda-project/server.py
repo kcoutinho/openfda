@@ -75,7 +75,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                 doc.write(message)
                 for drug in list_fda:
                     list2 = "<t>" + "<li>" + drug
-                    f.write(list2)
+                    doc.write(list2)
 
         def searching_manufacturer_names():  # This
 
@@ -103,11 +103,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             list_fda = []
             n = 0
             iterate = int(limit1)
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs produced by the manufacturer are the corresponding following ones:" + "<body style='background-color:#FA8258'>" + "</head>" + "<ol>" + "\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs produced by the manufacturer are the corresponding following ones:" + "<body style='background-color:#FA8258'>" + "</head>""<ol>" + "\n"
 
             while n < iterate:
                 try:
-                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"])
+                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
                     n += 1
                 except:
                     list_fda.append("Unknown")
@@ -118,7 +118,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                 doc.write(message)
                 for company in list_fda:
                     list2 = "<t>" + "<li>" + company
-                    f.write(list2)
+                    doc.write(list2)
 
         def listing_drugs():
 
@@ -246,13 +246,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
         elif 'searchDrug' in route: #If the client introduce this option in the path, the corresponding function will be called.
             searching_drugs() #The corresponding function will be called in order to be able to obtain its information.
-            with open("searchDrug.html","r") as doc: #The file related with the function will be opened to be read
+            with open("searchDrugs.html","r") as doc: #The file related with the function will be opened to be read
                 response = doc.read()
                 self.wfile.write(bytes(response, "utf8")) #Finally the response will be an html display.
 
         #The same process will be followed by the different kind of options.
         elif "searchCompany" in route:
-            searching_companies()
+            searching_manufacturer_names()
             with open('manufacturer_name.html','r') as doc:
                 response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
