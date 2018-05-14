@@ -3,12 +3,12 @@ import socketserver
 import http.client
 import json
 
-IP = "localhost"
-PORT = 8000
-socketserver.TCPServer.allow_reuse_address = True
+IP = "localhost" #Localhost is referred to our own IP
+PORT = 8000 #The predetermined port
+socketserver.TCPServer.allow_reuse_address = True #This line of code is used in order to be able to reuse the port without any kind of error
 
 
-class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
+class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is going to be use to build the different components of the future response for the client
     # GET
     def do_GET(self):
         self.send_response(200)
