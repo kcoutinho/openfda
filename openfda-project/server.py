@@ -11,7 +11,8 @@ socketserver.TCPServer.allow_reuse_address = True #This line of code is used in 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is going to be use to build the different components of the future response for the client
     # GET
     def do_GET(self):
-        route = self.path
+        route = self.path #we rename the value of self.path to deal easier with the code
+        #We establish the different possible options that can be found in the path and send an especific status
         if route == "/" or "searchDrug" in route or "searchCompany" in route or"listDrugs" in route or "listCompanies" in route or "listWarnings" in route:
             status_code = 200
         elif "redirect" in route:
@@ -29,20 +30,20 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             self.send_header("WWW-Authenticate", "Basic realm='OpenFDA Private Zone'")
         self.end_headers()
 
-        def searching_drugs():
+        def searching_drugs(): #This
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components= route.strip("/search?").split("&")
             drug_comp = components[0].split("=")[1]
             if "limit" in route:
-                limit = components[1].split("=")[1]
-                if limit == "":
-                    limit = "25"
+                limit1 = components[1].split("=")[1]
+                if limit1 == "":
+                    limit1 = "25"
             else:
-                limit = "25"
+                limit1 = "25"
 
-            url = "/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
+            url = "/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit1
             print(url)
 
             conn.request("GET", url, None, headers)
@@ -54,7 +55,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             drugs = []
             n=0
-            iterate = int(limit)
+            iterate = int(limit1)
             message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
 
             while n < iterate:
@@ -69,23 +70,24 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             with open('searchDrug.html', 'w') as f:
                 f.write(message)
                 for drug in drugs:
-                    drugs = "<t>" + "<li>" + drug
-                    f.write(drugs)
+                    drugs2 = "<t>" + "<li>" + drug
+                    f.write(drugs2)
 
         def searching_companies():
+
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = route.strip("/search?").split("&")
             company_comp = components[0].split("=")[1]
 
             if "limit" in route:
-                limit = components[1].split("=")[1]
-                if limit == "":
-                    limit = "25"
+                limit1 = components[1].split("=")[1]
+                if limit1 == "":
+                    limit1 = "25"
             else:
-                limit = "25"
+                limit1 = "25"
 
-            url = "/drug/label.json?search=openfda.manufacturer_name:" + company_comp + "&" + "limit=" + limit
+            url = "/drug/label.json?search=openfda.manufacturer_name:" + company_comp + "&" + "limit=" + limit1
             print(url)
 
             conn.request("GET", url, None, headers)
@@ -93,26 +95,27 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             print(r1.status, r1.reason)
             company_raw = r1.read().decode("utf-8")
             conn.close()
-            company_repo = json.loads(company_raw)
+            repo = json.loads(company_raw)
 
             companies = []
             n = 0
-            iterate = int(limit)
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The manufacturer names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#81F79F'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + '<font face="verdana" size="6" color="black">' + "The manufacturer names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#81F79F'>" + "</head>""<ol>" + "\n"
+            iterate = int(limit1)
+
             while n < iterate:
                 try:
-                    companies.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
+                    companies.append(repo["results"][n]["openfda"][0])
                     n += 1
                 except:
                     companies.append("Unknown")
                     print("Any manufacturer name has been assigned to this index")
                     n += 1
 
-            with open('searchCompany.html', 'w') as f:
-                f.write(message)
+            with open('manufacturer_name.html', 'w') as doc:
+                doc.write(message)
                 for company in companies:
-                    companies = "<t>" + "<li>" + company
-                    f.write(companies)
+                    companies2 = "<t>" + "<li>" + company
+                    doc.write(companies2)
 
         def listing_drugs():
 
@@ -142,7 +145,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     print("Any drug has been assigned to this index")
                     n += 1
 
-            with open('listDrugs.html', 'w') as f:
+            with open('drugs_list.html', 'w') as f:
                 f.write(message)
                 for drug in list_drugs:
                     list_drugs = "<t>" + "<li>" + drug
@@ -175,7 +178,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     print("Any manufacturer has been assigned to this index")
                     n += 1
 
-                with open('listCompanies.html', 'w') as f:
+                with open('companies_list.html', 'w') as f:
                     f.write(message)
                     for company in list_companies:
                         list_companies = "<t>" + "<li>" + company
@@ -217,7 +220,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     list_warnings.append("Unknown")
                     n += 1
 
-                with open('listWarnings.html', 'w') as f:
+                with open('warnings_list.html', 'w') as f:
                     f.write(message)
                     while ñ < iterate:
                         for warning in list_warnings:
@@ -247,7 +250,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
         #The same process will be followed by the different kind of options.
         elif "searchCompany" in route:
             searching_companies()
-            with open('searchCompany.html','r') as doc:
+            with open('manufacturer_name.html','r') as doc:
                 response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
 
