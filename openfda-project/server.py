@@ -38,9 +38,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in path:
                 limit = components[1].split("=")[1]
                 if limit == "":
-                    limit = "10"
+                    limit = "15"
             else:
-                limit = "10"
+                limit = "15"
 
             url = "/drug/label.json?search=active_ingredient:" + drug_comp + "&" + "limit=" + limit
             print(url)
@@ -55,7 +55,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             drugs = []
             n=0
             iterate = int(limit)
-            message = "<head>" + "<h3>" + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
 
             while n < iterate:
                 try:
@@ -81,9 +81,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in path:
                 limit = components[1].split("=")[1]
                 if limit == "":
-                    limit = "10"
+                    limit = "15"
             else:
-                limit = "10"
+                limit = "15"
 
             url = "/drug/label.json?search=openfda.manufacturer_name:" + company_comp + "&" + "limit=" + limit
             print(url)
@@ -98,7 +98,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             companies = []
             n = 0
             iterate = int(limit)
-            message = "<head>" + "<h3>" + "The manufacturer names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#81F79F'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The manufacturer names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#81F79F'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
                     companies.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
@@ -132,7 +132,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             list_drugs = []
             n = 0
             iterate = int(limit)
-            message = "<head>" + "<h3>" + "Here a list is shown with all the names of the drugs required:" + "<body style='background-color:#F78181'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the drugs required:" + "<body style='background-color:#F78181'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
                     list_drugs.append(drugs_repo["results"][n]["openfda"]["active_ingredient"][0])
@@ -165,7 +165,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             list_companies = []
             n = 0
             iterate = int(limit)
-            message = "<head>" + "<h3>" + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F2F5A9'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F2F5A9'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
                     list_companies.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
@@ -201,7 +201,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             m = 0
             ñ = 0
             iterate = int(limit)
-            message = "<head>" + "<h3>" + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
                     warnings.append(warning_repo["results"][n]["openfda"]["brand_name"][0])
