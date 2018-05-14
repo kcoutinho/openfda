@@ -224,13 +224,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     list_warnings.append("Unknown")
                     n += 1
 
-                with open('warnings_list.html', 'w') as f:
-                    f.write(message)
-                    while ñ < iterate:
-                        for warning in warnings:
-                            list_warnings2 = "<t>" + "<li>" + "The warning for the" + warnings[ñ] + "is" + warning
-                            f.write(list_warnings2)
-                            ñ += 1
+            with open('warnings_list.html', 'w') as doc:
+                f.write(message)
+                while ñ < iterate:
+                    for warning in warnings:
+                        list_warnings2 = "<t>" + "<li>" + "The warning for the" + warnings[ñ] + "is" + warning
+                        f.write(list_warnings2)
+                        ñ += 1
 
         if route == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
             try:
