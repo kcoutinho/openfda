@@ -122,7 +122,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             message = "<head>" + "<h3>" + "Here a list is shown with all the names of the drugs required:" + "<body style='background-color:#F78181'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
-                    list_drugs.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
+                    list_drugs.append(drugs_repo["results"][n]["openfda"]["active_ingredient"][0])
                     n += 1
                 except:
                     list_drugs.append("Unknown")
@@ -186,6 +186,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             list_warnings = []
             n = 0
             m = 0
+            ñ = 0
             iterate = int(limit)
             message = "<head>" + "<h3>" + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
             while n < iterate:
@@ -197,7 +198,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     n += 1
             while m < iterate:
                 try:
-                    list_warnings.append(warning_repo["results"][n]["warnings"][0])
+                    list_warnings.append(warning_repo["results"][m]["warnings"][0])
                     n += 1
                 except:
                     list_warnings.append("Unknown")
@@ -205,9 +206,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
                 with open('listWarnings.html', 'w') as f:
                     f.write(message)
-                    for warning in list_warnings:
-                        list_warnings = "<t>" + "<li>" + warning
-                        f.write(list_warnings)
+                    while ñ < iterate:
+                        for warning in list_warnings:
+                            list_warnings = "<t>" + "<li>" + warning
+                            f.write(list_warnings)
+                            ñ += 1
 
         if path == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
             print("SEARCH: The client is searching a web")
