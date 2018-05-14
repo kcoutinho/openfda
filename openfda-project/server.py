@@ -11,6 +11,7 @@ socketserver.TCPServer.allow_reuse_address = True #This line of code is used in 
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is going to be use to build the different components of the future response for the client
     # GET
     def do_GET(self):
+
         route = self.path #we rename the value of self.path to deal easier with the code
         #We establish the different possible options that can be found in the path and send an especific status
         if route == "/" or "searchDrug" in route or "searchCompany" in route or"listDrugs" in route or "listCompanies" in route or "listWarnings" in route:
@@ -22,10 +23,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
         else:
             status_code = 404
         self.send_response(status_code)
+
         if route == "/" or "searchDrug" in route or "searchCompany" in route or "listDrugs" in route or "listCompanies" in route or "listWarnings" in route:
             self.send_header('Content-type', 'text/html')
+
         elif "redirect" in route:
             self.send_header("Location","http://localhost:8000/")
+
         elif "secret" in route:
             self.send_header("WWW-Authenticate", "Basic realm='OpenFDA Private Zone'")
         self.end_headers()
@@ -73,7 +77,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     list2 = "<t>" + "<li>" + drug
                     f.write(list2)
 
-        def searching_companies():  # This
+        def searching_manufacturer_names():  # This
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
@@ -103,7 +107,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             while n < iterate:
                 try:
-                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
+                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"])
                     n += 1
                 except:
                     list_fda.append("Unknown")
