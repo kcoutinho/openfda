@@ -132,7 +132,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             limit = components[1]
             url = "/drug/label.json?limit=" + limit
             print(url)
-
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
@@ -141,14 +140,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             drugs_repo = json.loads(drugs_raw)
             list_drugs = []
             n = 0
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F78181'>" + "</head>""<ol>" + "\n"
             iterate = int(limit)
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the drugs required:" + "<body style='background-color:#F78181'>" + "</head>""<ol>" + "\n"
             while n < iterate:
                 try:
                     list_drugs.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
                     n += 1
                 except:
-                    list_drugs.append("Unknown")
+                    list_drugs.append("Not known")
                     print("Any drug has been assigned to this index")
                     n += 1
 
@@ -156,7 +155,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                 doc.write(message)
                 for drug in list_drugs:
                     list_drugs = "<t>" + "<li>" + drug
-                doc.write(list_drugs)
+                    doc.write(list_drugs)
+
 
         def listing_manufacturers(): #A function to obtain a list related to manufacturers
 
