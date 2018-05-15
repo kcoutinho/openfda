@@ -142,6 +142,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             n = 0
             message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F78181'>" + "</head>""<ol>" + "\n"
             iterate = int(limit)
+
             while n < iterate:
                 try:
                     list_drugs.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
@@ -176,6 +177,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             n = 0
             message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F2F5A9'>" + "</head>""<ol>" + "\n"
             iterate = int(limit)
+
             while n < iterate:
                 try:
                     list_companies.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
