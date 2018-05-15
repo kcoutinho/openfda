@@ -24,9 +24,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             status_code = 404
         self.send_response(status_code)
 
+        #Taking into account the previous options if they are in the path, then the following headers are going to be sent:
         if route == "/" or "searchDrug" in route or "searchCompany" in route or "listDrugs" in route or "listCompanies" in route or "listWarnings" in route:
             self.send_header('Content-type', 'text/html')
-
+        #According to the presence of some words in the path the components of the web are going to be established.
         elif "redirect" in route:
             self.send_header("Location","http://localhost:8000/")
 
@@ -34,22 +35,24 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             self.send_header("WWW-Authenticate", "Basic realm='OpenFDA Private Zone'")
         self.end_headers()
 
-        def searching_drugs(): #This
+        def searching_drugs(): #Searching_drugs is the first function created in this case with an empty argument. All the information related to the drugs that is relevant is goingto be stored inside of it
 
-            headers = {'User-Agent': 'http-client'}
+            headers = {'User-Agent': 'http-client'} #Headers
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components= route.strip("/search?").split("&")
+            components= route.strip("/search?").split("&") # /search? being deleted and the rest of the components of the url linked by &
             components_2 = components[0].split("=")[1]
+            #This function supports a limit in order to let the client decide how many information he/she want to receive from the server.
             if "limit" in route:
                 limit1 = components[1].split("=")[1]
                 if limit1 == "":
                     limit1 = "10"
             else:
-                limit1 = "10"
+                limit1 = "10" #A limit of 10 is being predetermined.
 
-            url = "/drug/label.json?search=active_ingredient:" + components_2 + "&" + "limit=" + limit1
+            url = "/drug/label.json?search=active_ingredient:" + components_2 + "&" + "limit=" + limit1 #Construction of the elements that compose the url
             print(url)
 
+            #To receive the data
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
@@ -57,28 +60,28 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             conn.close()
             drugs_repo = json.loads(drugs_raw)
 
-            list_fda = []
-            n=0
-            iterate = int(limit1)
+            list_fda = [] #Building of an empty list
+            n=0 #An element to iterate and that should start at 0
+            iterate = int(limit1) #to iterate the limit is established as an integer
             message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
-
+            #Doing iteration over the numbers until the limit
             while n < iterate:
                 try:
-                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
-                    n += 1
-                except:
+                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"][0]) #Adding the desired information to the empty list created before
+                    n += 1 #Add 1 to the value of n to continue iterating
+                except: #Exception created to deal with situations in which the information is not avalaible
                     list_fda.append("Unknown")
                     print("Any active ingredient has been assigned to this index")
                     n += 1
 
-            with open('searchDrugs.html', 'w') as doc:
+            with open('searchDrugs.html', 'w') as doc: #A file is created to store the information that was obtained by the function
                 doc.write(message)
-                for drug in list_fda:
+                for drug in list_fda: #Iterating over the list to append each element to the file
                     list2 = "<t>" + "<li>" + drug
                     doc.write(list2)
 
-        def searching_manufacturer_names():  # This
-
+        def searching_manufacturer_names():  # This is another function. In this case used to obtain information about manufacturers.
+            #The process that was explained before is followed in this function too.
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = route.strip("/search?").split("&")
