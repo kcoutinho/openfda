@@ -178,7 +178,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             iterate = int(limit)
             while n < iterate:
                 try:
-                    list_companies.append(company_repo["results"][n]["openfda"]["brand_name"][0])
+                    list_companies.append(company_repo["results"][n]["openfda"]["manufacturer_name"][0])
                     n += 1
                 except:
                     list_companies.append("Not known")
@@ -286,8 +286,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                 response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
         elif "redirect" in route:
-            print("Go back to the previous web page")
-            with open('redirect.html', 'r') as doc:
+            print("Go back to the previous web page") #In this case the home page
+            with open('search.html', 'r') as doc:
                 response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
         #In case that any of the previous options had been asked by the client, an error is going to be displayed.
