@@ -63,7 +63,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             list_fda = [] #Building of an empty list
             n=0 #An element to iterate and that should start at 0
             iterate = int(limit1) #to iterate the limit is established as an integer
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The active ingredient of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The drugs that have the provided active ingredient in their composition are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
             #Doing iteration over the numbers until the limit
             while n < iterate:
                 try:
@@ -99,9 +99,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
-            drugs_raw = r1.read().decode("utf-8")
+            manufacturer_raw = r1.read().decode("utf-8")
             conn.close()
-            drugs_repo = json.loads(drugs_raw)
+            manufacturer_repo = json.loads(manufacturer_raw)
 
             list_fda = []
             n = 0
@@ -110,7 +110,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
 
             while n < iterate:
                 try:
-                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"][0])
+                    list_fda.append(manufacturer_repo["results"][n]["openfda"]["brand_name"][0])
                     n += 1
                 except:
                     list_fda.append("Unknown")
