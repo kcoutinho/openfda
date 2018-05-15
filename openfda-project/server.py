@@ -67,7 +67,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             #Doing iteration over the numbers until the limit
             while n < iterate:
                 try:
-                    list_fda.append(drugs_repo["results"][n]["openfda"]["active_ingredient"][0]) #Adding the desired information to the empty list created before
+                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"][0]) #Adding the desired information to the empty list created before
                     n += 1 #Add 1 to the value of n to continue iterating
                 except: #Exception created to deal with situations in which the information is not avalaible
                     list_fda.append("Unknown")
