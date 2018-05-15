@@ -123,7 +123,8 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     list2 = "<t>" + "<li>" + company
                     doc.write(list2)
 
-        def listing_drugs():
+        def listing_drugs(): #The process to build this function is also the same as the one that has been followed.
+            #In this case the function is created to let the client obtain a list by given to the server a limit
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
@@ -151,13 +152,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     print("Any drug has been assigned to this index")
                     n += 1
 
-            with open('listDrugs.html', 'w') as f:
-                f.write(message)
+            with open('listDrugs.html', 'w') as doc:
+                doc.write(message)
                 for drug in list_drugs:
                     list_drugs = "<t>" + "<li>" + drug
-                    f.write(list_drugs)
+                doc.write(list_drugs)
 
-        def listing_manufacturers():
+        def listing_manufacturers(): #A function to obtain a list related to manufacturers
 
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
@@ -184,13 +185,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     print("Any manufacturer has been assigned to this index")
                     n += 1
 
-            with open('listCompanies.html', 'w') as f:
-                f.write(message)
+            with open('listCompanies.html', 'w') as doc:
+                doc.write(message)
                 for company in list_companies:
                     list_companies = "<t>" + "<li>" + company
-                    f.write(list_companies)
+                    doc.write(list_companies)
 
-        def listing_warnings():
+        def listing_warnings(): #A function to obtain information about warnings of drugs.
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
             components = route.strip("label.json?").split("=")
@@ -211,7 +212,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             ñ = 0
             iterate = int(limit)
             message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
-
+            #In this case it is neccesary to iterate three times to give to the client the desired information.
             while n < iterate:
                 try:
                     warnings.append(warning_repo["results"][n]["openfda"]["brand_name"][0])
@@ -228,18 +229,18 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     n += 1
 
             with open('warnings_list.html', 'w') as doc:
-                f.write(message)
+                doc.write(message)
                 while ñ < iterate:
                     for warning in warnings:
                         list_warnings2 = "<t>" + "<li>" + "The warning for the" + warnings[ñ] + "is" + list_warnings[ñ]
-                        f.write(list_warnings2)
+                        doc.write(list_warnings2)
                         ñ += 1
 
         if route == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
             try:
                 print("SEARCH: The client is searching a web")
-                with open("search.html", "r") as f: #Then the file called search will be read by default.
-                    response = f.read()
+                with open("search.html", "r") as doc: #Then the file called search will be read by default.
+                    response = doc.read()
                     self.wfile.write(bytes(response, "utf8")) #The response will be an html file with the corresponding information of search
             except KeyError:
                 print("ERROR")
@@ -289,6 +290,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             with open('redirect.html', 'r') as doc:
                 response = doc.read()
                 self.wfile.write(bytes(response, "utf8"))
+        #In case that any of the previous options had been asked by the client, an error is going to be displayed.
         else:
             print("ERROR")
             print("Not found")
