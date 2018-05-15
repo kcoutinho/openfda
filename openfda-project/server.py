@@ -43,9 +43,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in route:
                 limit1 = components[1].split("=")[1]
                 if limit1 == "":
-                    limit1 = "25"
+                    limit1 = "10"
             else:
-                limit1 = "25"
+                limit1 = "10"
 
             url = "/drug/label.json?search=active_ingredient:" + components_2 + "&" + "limit=" + limit1
             print(url)
@@ -86,9 +86,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in route:
                 limit1 = components[1].split("=")[1]
                 if limit1 == "":
-                    limit1 = "25"
+                    limit1 = "10"
             else:
-                limit1 = "25"
+                limit1 = "10"
 
             url = "/drug/label.json?search=openfda.manufacturer_name:" + components_2 + "&" + "limit=" + limit1
             print(url)
@@ -228,7 +228,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                 f.write(message)
                 while ñ < iterate:
                     for warning in warnings:
-                        list_warnings2 = "<t>" + "<li>" + "The warning for the" + warnings[ñ] + "is" + warning
+                        list_warnings2 = "<t>" + "<li>" + "The warning for the" + warnings[ñ] + "is" + list_warnings[ñ]
                         f.write(list_warnings2)
                         ñ += 1
 
