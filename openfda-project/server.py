@@ -45,9 +45,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in route:
                 limit1 = components[1].split("=")[1]
                 if limit1 == "":
-                    limit1 = "10"
+                    limit1 = "22"
             else:
-                limit1 = "10" #A limit of 10 is being predetermined.
+                limit1 = "22" #A limit of 10 is being predetermined.
 
             url = "/drug/label.json?search=active_ingredient:" + components_2 + "&" + "limit=" + limit1 #Construction of the elements that compose the url
             print(url)
@@ -63,11 +63,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             list_fda = [] #Building of an empty list
             n=0 #An element to iterate and that should start at 0
             iterate = int(limit1) #to iterate the limit is established as an integer
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The brand names of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The active ingredient of the drugs searched are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
             #Doing iteration over the numbers until the limit
             while n < iterate:
                 try:
-                    list_fda.append(drugs_repo["results"][n]["openfda"]["brand_name"][0]) #Adding the desired information to the empty list created before
+                    list_fda.append(drugs_repo["results"][n]["openfda"]["active_ingredient"][0]) #Adding the desired information to the empty list created before
                     n += 1 #Add 1 to the value of n to continue iterating
                 except: #Exception created to deal with situations in which the information is not avalaible
                     list_fda.append("Unknown")
@@ -89,9 +89,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             if "limit" in route:
                 limit1 = components[1].split("=")[1]
                 if limit1 == "":
-                    limit1 = "10"
+                    limit1 = "22"
             else:
-                limit1 = "10"
+                limit1 = "22"
 
             url = "/drug/label.json?search=openfda.manufacturer_name:" + components_2 + "&" + "limit=" + limit1
             print(url)
@@ -140,7 +140,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             drugs_repo = json.loads(drugs_raw)
             list_drugs = []
             n = 0
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F78181'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the drugs required:" + "<body style='background-color:green'>" + "</head>""<ol>" + "\n"
             iterate = int(limit)
 
             while n < iterate:
@@ -209,7 +209,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             warnings_repo = json.loads(warnings_raw)
             list_warnings = []
             n = 0
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F2F5A9'>" + "</head>""<ol>" + "\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the warnings of the drugs:" + "<body style='background-color:red'>" + "</head>""<ol>" + "\n"
             iterate = int(limit)
 
             while n < iterate:
