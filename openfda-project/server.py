@@ -194,49 +194,39 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
                     doc.write(list_companies)
 
         def listing_warnings(): #A function to obtain information about warnings of drugs.
+
             headers = {'User-Agent': 'http-client'}
             conn = http.client.HTTPSConnection("api.fda.gov")
-            components = route.strip("label.json?").split("=")
+            components = route.strip("/listWarnings?").split("=")
             limit = components[1]
             url = "/drug/label.json?limit=" + limit
             print(url)
-
             conn.request("GET", url, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
             warnings_raw = r1.read().decode("utf-8")
             conn.close()
-            warning_repo = json.loads(warnings_raw)
-            warnings=[]
+            warnings_repo = json.loads(warnings_raw)
             list_warnings = []
             n = 0
-            m = 0
-            ñ = 0
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the names of the companies required:" + "<body style='background-color:#F2F5A9'>" + "</head>""<ol>" + "\n"
             iterate = int(limit)
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "Here a list is shown with all the warnings of drugs required:" + "<body style='background-color:#58FA58'>" + "</head>""<ol>" + "\n"
-            #In this case it is neccesary to iterate three times to give to the client the desired information.
+
             while n < iterate:
                 try:
-                    warnings.append(warning_repo["results"][n]["openfda"]["brand_name"][0])
+                    list_warnings.append(warnings_repo["results"][n]["warnings"][0])
                     n += 1
                 except:
-                    warnings.append("Unknown")
-                    n += 1
-            while m < iterate:
-                try:
-                    list_warnings.append(warning_repo["results"][m]["warnings"][0])
-                    n += 1
-                except:
-                    list_warnings.append("Unknown")
+                    list_warnings.append("Not known")
+                    print("Any warnings has been assigned to this index")
                     n += 1
 
-            with open('warnings_list.html', 'w') as doc:
+            with open('listWarnings.html', 'w') as doc:
                 doc.write(message)
-                while ñ < iterate:
-                    for warning in warnings:
-                        list_warnings2 = "<t>" + "<li>" + "The warning for the" + warnings[ñ] + "is" + list_warnings[ñ]
-                        doc.write(list_warnings2)
-                        ñ += 1
+                for warning in list_warnings:
+                    list_warnings = "<t>" + "<li>" + warning
+                    doc.write(list_warnings)
+
 
         if route == "/": #If the client doesn´t introduce an especific option in the path, automatically, the following message will be displayed
             try:
