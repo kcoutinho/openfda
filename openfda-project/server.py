@@ -63,7 +63,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler): #This class is
             list_fda = [] #Building of an empty list
             n=0 #An element to iterate and that should start at 0
             iterate = int(limit1) #to iterate the limit is established as an integer
-            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The drugs that have the provided active ingredient in their composition are the corresponding following ones:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
+            message = "<head>" + "<h3>" + '<font face="verdana" size="4" color="black">' + "The drugs that are required are the corresponding following ones. A limit can be established:" + "<body style='background-color:#FA8258'>"+ "</head>"+"<ol>"+"\n"
             #Doing iteration over the numbers until the limit
             while n < iterate:
                 try:
